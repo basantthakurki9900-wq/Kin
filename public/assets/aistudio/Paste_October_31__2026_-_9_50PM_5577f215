@@ -1,0 +1,1203 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<meta name="theme-color" content="#0b7a5c">
+<title>खाता बुक</title>
+<style>
+:root{--g:#0b7a5c;--gd:#075c45;--r:#d9362b;--bg:#f2f6f4;--card:#fff;--t:#1b2420;--m:#6b7a73;--b:#e1e8e4;--warn:#ff9800;--warn-bg:#fff8e1;--danger-bg:#fdeceb}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:var(--t);font-family:system-ui,-apple-system,"Noto Sans Devanagari",sans-serif;font-size:16px;padding-bottom:140px}
+body.vp{padding-top:230px}
+.top{background:var(--g);color:#fff;padding:16px;position:sticky;top:0;z-index:5}
+.top h1{margin:0;font-size:20px}.top small{opacity:.85}
+.wrap{padding:12px;max-width:720px;margin:auto}
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.stat{background:var(--card);border-radius:14px;padding:12px;border:1px solid var(--b)}
+.stat b{display:block;font-size:20px;margin-top:2px}
+.red{color:var(--r)}.grn{color:var(--g)}.mut{color:var(--m)}
+input,select,textarea{width:100%;padding:12px;border:1px solid var(--b);border-radius:10px;font-size:16px;background:#fff;margin:4px 0 8px;font-family:inherit}
+label{display:block;font-size:13px;color:var(--m);margin-top:6px}
+.row{display:flex;gap:8px;align-items:center}
+.btn{background:var(--g);color:#fff;border:0;border-radius:10px;padding:12px 16px;font-size:15px;font-weight:600;font-family:inherit;cursor:pointer}
+.btn.red{background:var(--r);color:#fff}
+.btn2{background:#e6efeb;color:var(--gd);border:0;border-radius:10px;padding:11px 14px;font-size:14px;font-weight:600;font-family:inherit;cursor:pointer}
+.btn2.d{background:#fdeceb;color:var(--r)}
+.item{background:var(--card);border:1px solid var(--b);border-radius:14px;padding:12px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.item.ovr{border-left:4px solid var(--r);background:var(--danger-bg)}
+.item .n{font-weight:700}.item .s{font-size:13px;color:var(--m)}
+.amt{text-align:right;font-weight:800;font-size:17px}.amt small{display:block;font-weight:500;font-size:12px}
+nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--b);display:flex;z-index:6}
+nav button{flex:1;border:0;background:none;padding:8px 2px 10px;font-size:11px;color:var(--m);font-family:inherit;cursor:pointer}
+nav button span{display:block;font-size:20px}
+nav button.on{color:var(--g);font-weight:700}
+.mic{position:fixed;right:16px;bottom:78px;width:60px;height:60px;border-radius:50%;border:0;background:var(--r);color:#fff;font-size:26px;box-shadow:0 4px 14px rgba(0,0,0,.3);z-index:7;cursor:pointer}
+.mic.rec{animation:pulse 1.2s infinite}
+body.vp .mic{display:none}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
+.fab{position:fixed;left:16px;bottom:78px;background:var(--g);color:#fff;border:0;border-radius:30px;padding:16px 20px;font-size:16px;font-weight:700;box-shadow:0 4px 14px rgba(0,0,0,.25);z-index:7;font-family:inherit;cursor:pointer}
+.fab2{position:fixed;left:50%;transform:translateX(-50%);bottom:78px;background:#1b2420;color:#fff;border:0;border-radius:30px;padding:14px 22px;font-size:14px;font-weight:600;box-shadow:0 4px 14px rgba(0,0,0,.25);z-index:7;font-family:inherit;cursor:pointer}
+#modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:flex-end;justify-content:center;z-index:20}
+#modal.on{display:flex}
+.sheet{background:#fff;width:100%;max-width:720px;border-radius:20px 20px 0 0;padding:18px;max-height:90vh;overflow:auto}
+body.vp .sheet{max-height:calc(100vh - 250px)}
+.sheet h3{margin:0 0 8px}
+.big{background:var(--card);border-radius:16px;padding:16px;text-align:center;border:1px solid var(--b);margin-bottom:10px}
+.big b{font-size:34px;display:block}
+.acts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.acts .btn,.acts .btn2{width:100%}
+.log{background:var(--card);border:1px solid var(--b);border-radius:12px;padding:10px;margin-bottom:8px;font-size:14px;position:relative}
+.log .h{display:flex;justify-content:space-between;font-weight:700;align-items:flex-start;gap:8px}
+.log .del{background:none;border:0;color:var(--r);font-size:16px;cursor:pointer;padding:2px 6px;border-radius:6px;flex-shrink:0}
+.log .del:hover{background:var(--danger-bg)}
+.log .items{background:#fff8e1;border-left:3px solid var(--warn);padding:4px 8px;border-radius:6px;margin-top:4px;font-size:13px}
+.log .due{background:#fdeceb;color:var(--r);padding:2px 8px;border-radius:6px;font-size:12px;display:inline-block;margin-top:4px}
+.log .due.ok{background:#e6f5ee;color:var(--g)}
+.badge{background:#fff3cd;color:#8a6d00;border-radius:6px;padding:1px 6px;font-size:11px;margin-left:4px}
+.chips{display:flex;gap:6px;overflow:auto;margin-bottom:10px;flex-wrap:wrap}
+.chips button{border:1px solid var(--b);background:#fff;border-radius:20px;padding:7px 14px;white-space:nowrap;font-family:inherit;cursor:pointer}
+.chips button.on{background:var(--g);color:#fff;border-color:var(--g)}
+#qr{display:flex;justify-content:center;margin:12px 0}
+.tr{background:#f2f6f4;border-radius:10px;padding:10px;min-height:44px;margin:8px 0;font-size:14px}
+.res{background:#e6f5ee;border-radius:10px;padding:10px;min-height:44px;margin:8px 0;font-weight:600;font-size:15px}
+.hint{font-size:13px;color:var(--m);line-height:1.6}
+#toast{position:fixed;left:50%;transform:translateX(-50%);bottom:150px;background:#222;color:#fff;padding:10px 16px;border-radius:20px;font-size:14px;z-index:30;display:none;max-width:90%}
+.center{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:24px;max-width:420px;margin:auto;text-align:center}
+.back{background:none;border:0;color:#fff;font-size:15px;padding:0;margin-bottom:6px;font-family:inherit;cursor:pointer}
+.month-bar{display:flex;gap:6px;align-items:center;margin-bottom:10px}
+.month-bar select{margin:0;width:auto;flex:1}
+.month-box{background:var(--card);border:1px solid var(--b);border-radius:12px;padding:12px;margin-bottom:10px}
+.month-box .nums{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;text-align:center;margin-top:6px}
+.month-box .nums b{display:block;font-size:18px}
+.warn-pop{background:var(--warn-bg);border:2px solid var(--warn);border-radius:12px;padding:12px;margin:8px 0}
+.lim-box{background:#e6f5ee;border:1px solid var(--g);border-radius:8px;padding:6px 10px;font-size:12px;color:var(--gd);margin-top:4px}
+.lim-box.over{background:var(--danger-bg);border-color:var(--r);color:var(--r)}
+/* आवाज़ सहायक पैनल (ऊपर, ताकि नीचे का ऐप और पॉप-अप चलते रहें) */
+#vpanel{position:fixed;top:0;left:0;right:0;z-index:25;background:#fff;border-bottom:3px solid var(--g);box-shadow:0 6px 20px rgba(0,0,0,.2);padding:8px 12px 10px;display:none;max-width:720px;margin:auto;border-radius:0 0 16px 16px;max-height:75vh;overflow:auto}
+#vpanel.on{display:block}
+#vpanel .vh{display:flex;justify-content:space-between;align-items:center;gap:8px}
+#vpanel .tr,#vpanel .res{min-height:32px;margin:4px 0;padding:6px 10px;font-size:14px}
+#vpanel input{margin:4px 0}
+#vpanel .btn,#vpanel .btn2{padding:9px 12px}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="modal"></div>
+<div id="vpanel"></div>
+<div id="toast"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+const KEY='khatabook_v2';
+let DB;
+try{DB=JSON.parse(localStorage.getItem(KEY)||'null')}catch(e){DB=null}
+if(DB){
+  if(!DB.settings.depositLimit)DB.settings.depositLimit=1000;
+  if(DB.settings.defaultCreditLimit===undefined)DB.settings.defaultCreditLimit=0;
+  if(!DB.log)DB.log=[];
+  DB.log.forEach(l=>{if(l.deleted===undefined)l.deleted=false});
+  DB.accounts.forEach(a=>{if(a.limit===undefined)a.limit=0});
+}else{
+  DB={accounts:[],log:[],stock:[],settings:{shop:'मेरी दुकान',upi:'',link:'',pin:'',depositLimit:1000,defaultCreditLimit:0}};
+}
+if(!DB.accounts.length && !DB.log.length){
+  try{
+    const old=JSON.parse(localStorage.getItem('khatabook_v1')||'null');
+    if(old&&old.accounts){
+      DB.accounts=old.accounts;
+      DB.log=old.log||[];
+      DB.stock=old.stock||[];
+      DB.settings=Object.assign(DB.settings,old.settings);
+      DB.log.forEach(l=>{if(l.deleted===undefined)l.deleted=false});
+      DB.accounts.forEach(a=>{if(a.limit===undefined)a.limit=0});
+    }
+  }catch(e){}
+}
+const save=()=>localStorage.setItem(KEY,JSON.stringify(DB));
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const money=n=>'₹'+Math.abs(n).toLocaleString('en-IN');
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+const dt=t=>new Date(t).toLocaleString('en-IN',{day:'numeric',month:'short',year:'numeric',hour:'numeric',minute:'2-digit'});
+const get=id=>DB.accounts.find(a=>a.id===id);
+const h10=m=>String(m).replace(/\D/g,'').slice(-10);
+const hsh=s=>{let x=5381;for(const c of s)x=((x*33)^c.charCodeAt(0))>>>0;return x.toString(36)};
+let V={tab:'home',open:null,q:'',hf:'all',hMonth:''};
+let _forceSaveData=null;
+
+function toast(m){const t=$('#toast');t.textContent=m;t.style.display='block';clearTimeout(toast.id);toast.id=setTimeout(()=>t.style.display='none',2600)}
+function modal(h){const m=$('#modal');m.innerHTML='<div class="sheet">'+h+'</div>';m.classList.add('on');m.onclick=e=>{if(e.target===m)closeModal()}}
+function closeModal(){_forceSaveData=null;const m=$('#modal');m.classList.remove('on');m.innerHTML=''}
+
+const LBL={create:'खाता बना',add:'उधार चढ़ाया (+)',sub:'पैसे घटाए / जमा (−)',edit:'खाता बदला',delete:'खाता हटाया गया',restore:'खाता वापस लाया गया',purge:'हमेशा के लिए हटाया',logdel:'इतिहास एंट्री हटाई'};
+function log(type,a,amt,before,after,note,src,items,due){DB.log.push({id:uid(),t:Date.now(),type,acc:a.id,name:a.name,mobile:a.mobile,amt:amt||0,before,after,note:note||'',src:src||'',items:items||'',due:due||0,deleted:false})}
+function createAccount(name,mobile,src,limit){
+  name=name.trim();mobile=h10(mobile);
+  if(!name)return 'नाम डालिए';
+  if(mobile.length<10)return 'मोबाइल नंबर 10 अंक का होना चाहिए';
+  if(DB.accounts.some(a=>!a.deleted&&h10(a.mobile)===mobile))return 'इस नंबर का खाता पहले से है';
+  const a={id:uid(),name,mobile,bal:0,created:Date.now(),deleted:false,limit:limit||0};
+  DB.accounts.push(a);log('create',a,0,0,0,'',src);save();return a;
+}
+function txn(id,delta,note,src,items,due){
+  const a=get(id);const before=a.bal;
+  const newBal=Math.round((a.bal+delta)*100)/100;
+  if(delta<0 && DB.settings.depositLimit>0){
+    const newAdv=newBal<0?Math.abs(newBal):0;
+    if(newAdv>DB.settings.depositLimit){
+      return {error:'deposit',newAdv,limit:DB.settings.depositLimit};
+    }
+  }
+  a.bal=newBal;
+  log(delta>0?'add':'sub',a,Math.abs(delta),before,a.bal,note,src,items,due);save();
+  return {ok:true};
+}
+function delAcc(id){const a=get(id);a.deleted=true;a.deletedAt=Date.now();log('delete',a,0,a.bal,a.bal);save();V.open=null;closeModal();render();toast('खाता हटा दिया')}
+function restoreAcc(id){const a=get(id);a.deleted=false;delete a.deletedAt;log('restore',a,0,a.bal,a.bal);save();render();toast('खाता वापस आ गया')}
+function purgeAcc(id){const a=get(id);log('purge',a,0,a.bal,a.bal);DB.accounts=DB.accounts.filter(x=>x.id!==id);save();closeModal();render()}
+
+function delLogEntry(logId){
+  const l=DB.log.find(x=>x.id===logId);
+  if(!l)return;
+  modal('<h3>इस एंट्री को हटाएँ?</h3><p class="mut">खाते का बैलेंस बिल्कुल वैसे ही रहेगा, सिर्फ़ इतिहास से यह एंट्री हटेगी।</p>'+logRow(l,false,false)+'<div class="row"><button class="btn red" onclick="confirmDelLog(\''+logId+'\')">हाँ, हटाओ</button><button class="btn2" onclick="closeModal()">नहीं</button></div>');
+}
+function confirmDelLog(logId){
+  const l=DB.log.find(x=>x.id===logId);
+  if(!l)return;
+  l.deleted=true;l.deletedAt=Date.now();
+  const a=get(l.acc);if(a)log('logdel',a,0,a.bal,a.bal,'हटाई गई एंट्री: '+LBL[l.type]+(l.amt?' '+money(l.amt):''));
+  save();closeModal();render();toast('एंट्री हटा दी');
+}
+function clearHistory(accId){
+  const a=get(accId);
+  modal('<h3>'+esc(a.name)+' की पूरी हिस्ट्री साफ़ करें?</h3><p class="mut">खाते का बैलेंस बिल्कुल वैसे ही रहेगा, सिर्फ़ इतिहास की सारी एंट्री हटेंगी।</p><div class="row"><button class="btn red" onclick="confirmClearHistory(\''+accId+'\')">हाँ, पूरी साफ़ करो</button><button class="btn2" onclick="closeModal()">नहीं</button></div>');
+}
+function confirmClearHistory(accId){
+  const cnt=DB.log.filter(l=>l.acc===accId&&!l.deleted).length;
+  DB.log.forEach(l=>{if(l.acc===accId&&!l.deleted){l.deleted=true;l.deletedAt=Date.now()}});
+  const a=get(accId);if(a)log('logdel',a,0,a.bal,a.bal,cnt+' एंट्री साफ़ की गई');
+  save();closeModal();render();toast('पूरी हिस्ट्री साफ़ हो गई');
+}
+
+function lockView(){return '<div class="center"><h1>🔒 खाता बुक</h1><p class="mut">PIN डालिए</p><input id="pin" type="password" inputmode="numeric" placeholder="PIN" onkeydown="if(event.key===\'Enter\')unlock()"><button class="btn" onclick="unlock()">खोलें</button></div>'}
+function unlock(){if($('#pin').value===DB.settings.pin){sessionStorage.setItem('kb_ok','1');render()}else toast('गलत PIN')}
+
+function topbar(sub){return '<div class="top"><h1>📒 '+esc(DB.settings.shop)+'</h1><small>'+sub+'</small></div>'}
+function nav(){
+  const t=[['home','👥','खाते'],['stock','📦','खत्म स्टॉक'],['deleted','🗑️','हटाए गए'],['history','🕘','इतिहास'],['settings','⚙️','सेटिंग']];
+  return '<nav>'+t.map(x=>'<button class="'+(V.tab===x[0]?'on':'')+'" onclick="go(\''+x[0]+'\')"><span>'+x[1]+'</span>'+x[2]+'</button>').join('')+'</nav>';
+}
+function go(t){closeModal();V.tab=t;V.open=null;render();window.scrollTo(0,0)}
+function openAcc(id){V.open=id;render();window.scrollTo(0,0)}
+
+function isOverdue(a){
+  if(a.bal<=0)return false;
+  const now=Date.now();
+  return DB.log.some(l=>l.acc===a.id&&!l.deleted&&l.due&&l.due<now&&l.type==='add');
+}
+function nextDue(a){
+  const now=Date.now();
+  const ds=DB.log.filter(l=>l.acc===a.id&&!l.deleted&&l.due&&l.type==='add').map(l=>l.due);
+  if(!ds.length)return 0;
+  const future=ds.filter(d=>d>now);
+  return future.length?Math.min(...future):Math.max(...ds);
+}
+function balHtml(a){
+  let extra='';
+  if(isOverdue(a)){extra='<div class="due" style="margin-top:4px">⏰ वापसी तारीख बीत गई</div>'}
+  else if(a.bal>0){const d=nextDue(a);if(d){extra='<div class="due ok" style="margin-top:4px">📅 वापसी: '+dt(d).split(',')[0]+'</div>'}}
+  if(a.bal>0)return '<div class="amt red">'+money(a.bal)+'<small>उधार बाकी</small></div>'+extra;
+  if(a.bal<0)return '<div class="amt grn">'+money(a.bal)+'<small>एडवांस / आपको देना</small></div>';
+  return '<div class="amt mut">₹0<small>हिसाब बराबर</small></div>';
+}
+function listHtml(){
+  const q=V.q.trim().toLowerCase();
+  const l=DB.accounts.filter(a=>!a.deleted&&(!q||a.name.toLowerCase().includes(q)||a.mobile.includes(q))).sort((a,b)=>{
+    const ao=isOverdue(a)?1:0,bo=isOverdue(b)?1:0;
+    if(ao!==bo)return bo-ao;
+    return b.bal-a.bal;
+  });
+  if(!l.length)return '<p class="mut" style="text-align:center;margin-top:30px">'+(q?'कोई खाता नहीं मिला':'अभी कोई खाता नहीं। नीचे "+ नया खाता" दबाइए।')+'</p>';
+  return l.map(a=>'<div class="item '+(isOverdue(a)?'ovr':'')+'" onclick="openAcc(\''+a.id+'\')"><div><div class="n">'+esc(a.name)+(isOverdue(a)?' <span style="color:var(--r)">⏰</span>':'')+'</div><div class="s">📱 '+esc(a.mobile)+'</div>'+(a.limit>0&&a.bal>a.limit?'<div class="lim-box over">⚠ उधार सीमा पार (सीमा: '+money(a.limit)+')</div>':'')+'</div>'+balHtml(a)+'</div>').join('');
+}
+function renderList(){const el=$('#list');if(el)el.innerHTML=listHtml()}
+function homeView(){
+  const act=DB.accounts.filter(a=>!a.deleted);
+  const owe=act.reduce((s,a)=>s+Math.max(a.bal,0),0),adv=act.reduce((s,a)=>s+Math.max(-a.bal,0),0);
+  const ovr=act.filter(isOverdue).length;
+  return topbar(act.length+' खाते')+'<div class="wrap"><div class="cards"><div class="stat">कुल उधार बाकी<b class="red">'+money(owe)+'</b></div><div class="stat">एडवांस जमा<b class="grn">'+money(adv)+'</b></div></div>'
+   +(ovr?'<div class="warn-pop">⏰ <b>'+ovr+' खाते</b> में वापसी तारीख बीत गई है। <button class="btn2" style="display:inline;margin:0 0 0 8px" onclick="bulkRemind()">याद दिलाएँ</button></div>':'')
+   +'<input id="srch" placeholder="🔍 नाम या मोबाइल से खोजें" value="'+esc(V.q)+'" oninput="V.q=this.value;renderList()"><div id="list">'+listHtml()+'</div></div>'
+   +'<button class="fab" onclick="newAccModal()">+ नया खाता</button>'
+   +(owe>0?'<button class="fab2" onclick="bulkRemind()">💬 सबको याद दिलाएँ</button>':'');
+}
+function accView(a){
+  const hs=DB.log.filter(l=>l.acc===a.id&&!l.deleted).sort((x,y)=>y.t-x.t);
+  let limInfo='';
+  if(a.limit>0){
+    const over=a.bal>a.limit;
+    limInfo='<div class="lim-box '+(over?'over':'')+'">उधार सीमा: '+money(a.limit)+(over?' (पार!)':' · बचा: '+money(Math.max(0,a.limit-a.bal)))+'</div>';
+  }
+  return '<div class="top"><button class="back" onclick="V.open=null;render()">← वापस</button><h1>'+esc(a.name)+'</h1><small>📱 '+esc(a.mobile)+'</small></div><div class="wrap">'
+  +'<div class="big"><span class="mut">'+(a.bal>0?'उधार बाकी':a.bal<0?'एडवांस / आपको देना':'हिसाब बराबर')+'</span><b class="'+(a.bal>0?'red':a.bal<0?'grn':'mut')+'">'+money(a.bal)+'</b></div>'
+  +limInfo
+  +'<div class="acts"><button class="btn red" onclick="amtModal(\''+a.id+'\',1)">➕ उधार चढ़ाओ</button><button class="btn" onclick="amtModal(\''+a.id+'\',-1)">➖ पैसे घटाओ / जमा</button>'
+  +'<button class="btn2" onclick="shareWA(\''+a.id+'\')">💬 WhatsApp पर भेजें</button><button class="btn2" onclick="showQR(\''+a.id+'\',\'chk\')">▦ QR कोड</button>'
+  +'<button class="btn2" onclick="printStatement(\''+a.id+'\')">🖨️ स्टेटमेंट / PDF</button><button class="btn2" onclick="editModal(\''+a.id+'\')">✏️ खाता सही करें</button>'
+  +'<button class="btn2" onclick="clearHistory(\''+a.id+'\')">🧹 पूरी हिस्ट्री साफ़ करें</button><button class="btn2 d" onclick="delModal(\''+a.id+'\')">🗑️ खाता हटाएँ</button></div>'
+  +'<h3>इतिहास</h3>'+(hs.length?hs.map(l=>logRow(l,false)).join(''):'<p class="mut">कोई इतिहास नहीं</p>')+'</div>';
+}
+function logRow(l,showName,showDel){
+  if(showDel===undefined)showDel=true;
+  const sign=l.type==='add'?'+':l.type==='sub'?'−':'';
+  const col=l.type==='add'?'red':l.type==='sub'?'grn':'mut';
+  const delBtn=(showDel&&(l.type==='add'||l.type==='sub'||l.type==='create'||l.type==='edit'))?'<button class="del" onclick="event.stopPropagation();delLogEntry(\''+l.id+'\')" title="एंट्री हटाएँ">✕</button>':'';
+  let dueInfo='';
+  if(l.due&&(l.type==='add')){
+    const over=l.due<Date.now();
+    dueInfo='<div class="due '+(over?'':'ok')+'">📅 वापसी: '+dt(l.due).split(',')[0]+(over?' (बीत गई)':'')+'</div>';
+  }
+  return '<div class="log"><div class="h"><span>'+LBL[l.type]+(l.src?'<span class="badge">'+esc(l.src)+'</span>':'')+'</span><span style="display:flex;align-items:center;gap:4px"><span class="'+col+'">'+(sign?sign+money(l.amt):'')+'</span>'+delBtn+'</span></div>'
+   +(showName?'<div>'+esc(l.name)+' · '+esc(l.mobile)+'</div>':'')
+   +((l.type==='add'||l.type==='sub'||l.type==='delete')?'<div class="mut">पहले '+(l.before<0?'−':'')+money(l.before)+' → अब '+(l.after<0?'−':'')+money(l.after)+'</div>':'')
+   +(l.items?'<div class="items">📦 सामान: '+esc(l.items)+'</div>':'')
+   +(l.note?'<div>📝 '+esc(l.note)+'</div>':'')
+   +dueInfo
+   +'<div class="mut" style="font-size:12px">'+dt(l.t)+'</div></div>';
+}
+function stockView(){
+  const l=DB.stock;
+  return topbar('जो सामान खत्म हो गया')+'<div class="wrap"><div class="row"><input id="sn" placeholder="खत्म हुआ सामान (जैसे: चीनी)"><button class="btn" onclick="addStock()" style="margin-bottom:8px">जोड़ें</button></div><input id="sq" placeholder="मात्रा / नोट (वैकल्पिक)">'
+   +(l.length?l.map(s=>'<div class="item"><div><div class="n">'+esc(s.name)+'</div><div class="s">'+esc(s.note||'')+' '+dt(s.t)+'</div></div><button class="btn2" onclick="stockDone(\''+s.id+'\')">✔ आ गया</button></div>').join('')+'<button class="btn2" style="width:100%" onclick="shareStock()">💬 सूची WhatsApp पर भेजें</button>':'<p class="mut" style="text-align:center;margin-top:30px">कोई सामान खत्म नहीं 🎉</p>')+'</div>';
+}
+function addStock(name,note){
+  name=(name||($('#sn')&&$('#sn').value)||'').trim();note=note||($('#sq')&&$('#sq').value)||'';
+  if(!name){toast('सामान का नाम डालिए');return}
+  DB.stock.unshift({id:uid(),name,note:note.trim(),t:Date.now()});save();render();
+}
+function stockDone(id){DB.stock=DB.stock.filter(s=>s.id!==id);save();render();toast('सूची से हटाया')}
+function shareStock(){const t='📦 खत्म स्टॉक – '+DB.settings.shop+'\n'+DB.stock.map((s,i)=>(i+1)+'. '+s.name+(s.note?' ('+s.note+')':'')).join('\n');window.open('https://wa.me/?text='+encodeURIComponent(t),'_blank')}
+function deletedView(){
+  const delList=DB.accounts.filter(a=>a.deleted).sort((a,b)=>b.deletedAt-a.deletedAt);
+  return topbar('हटाए गए खाते')+'<div class="wrap">'+(delList.length?delList.map(a=>'<div class="item" style="display:block"><div class="row" style="justify-content:space-between"><div><div class="n">'+esc(a.name)+'</div><div class="s">📱 '+esc(a.mobile)+'</div></div>'+balHtml(a)+'</div><div class="red" style="font-size:13px;margin:6px 0">🗑️ इसका खाता हटाया गया – '+dt(a.deletedAt)+'</div><div class="row"><button class="btn2" onclick="restoreAcc(\''+a.id+'\')">↩ वापस लाओ</button><button class="btn2" onclick="accHist(\''+a.id+'\')">🕘 इतिहास</button><button class="btn2 d" onclick="purgeModal(\''+a.id+'\')">❌ पूरा हटाओ</button></div></div>').join(''):'<p class="mut" style="text-align:center;margin-top:30px">कोई हटाया हुआ खाता नहीं</p>')+'</div>';
+}
+function accHist(id){const a=get(id);const hs=DB.log.filter(l=>l.acc===id&&!l.deleted).sort((x,y)=>y.t-x.t);modal('<h3>'+esc(a.name)+' – इतिहास</h3>'+hs.map(l=>logRow(l,false)).join('')+'<button class="btn2" style="width:100%" onclick="closeModal()">बंद करें</button>')}
+function purgeModal(id){modal('<h3>हमेशा के लिए हटाएँ?</h3><p class="mut">खाता पूरी तरह चला जाएगा (इतिहास में सिर्फ़ एंट्री बचेगी)।</p><div class="row"><button class="btn red" onclick="purgeAcc(\''+id+'\')">हाँ, हटाओ</button><button class="btn2" onclick="closeModal()">नहीं</button></div>')}
+
+function historyView(){
+  const now=new Date();
+  const curM=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0');
+  if(!V.hMonth)V.hMonth=curM;
+  const [yy,mm]=V.hMonth.split('-').map(Number);
+  const months=[];
+  for(let i=0;i<24;i++){
+    const d=new Date(now.getFullYear(),now.getMonth()-i,1);
+    months.push({v:d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0'),l:d.toLocaleString('en-IN',{month:'long',year:'numeric'})});
+  }
+  if(!months.some(m=>m.v===V.hMonth)){months.push({v:V.hMonth,l:new Date(yy,mm-1,1).toLocaleString('en-IN',{month:'long',year:'numeric'})})}
+  const all=DB.log.filter(l=>!l.deleted);
+  const ms=all.filter(l=>{
+    const d=new Date(l.t);
+    return d.getFullYear()===yy&&(d.getMonth()+1)===mm;
+  }).sort((a,b)=>b.t-a.t);
+  const totAdd=ms.filter(l=>l.type==='add').reduce((s,l)=>s+l.amt,0);
+  const totSub=ms.filter(l=>l.type==='sub').reduce((s,l)=>s+l.amt,0);
+  const beforeMonth=new Date(yy,mm-1,1).getTime();
+  const balBefore=all.filter(l=>l.t<beforeMonth).reduce((s,l)=>{
+    if(l.type==='add')return s+l.amt;
+    if(l.type==='sub')return s-l.amt;
+    return s;
+  },0);
+  const balEnd=balBefore+totAdd-totSub;
+  const f=V.hf;
+  const filtered=ms.filter(x=>f==='all'||(f==='add'&&x.type==='add')||(f==='sub'&&x.type==='sub')||(f==='acc'&&['create','edit','delete','restore','purge','logdel'].includes(x.type)));
+  const c=[['all','सब'],['add','उधार (+)'],['sub','जमा (−)'],['acc','खाते']];
+  return topbar('सारा हिसाब-किताब')+'<div class="wrap">'
+  +'<div class="month-box"><label>महीना चुनें</label><div class="month-bar"><select onchange="V.hMonth=this.value;render()">'+months.map(m=>'<option value="'+m.v+'" '+(m.v===V.hMonth?'selected':'')+'>'+m.l+(m.v===curM?' (इस महीने)':'')+'</option>').join('')+'</select></div>'
+  +'<div class="nums"><div><span class="mut">उधार बढ़ा</span><b class="red">'+money(totAdd)+'</b></div><div><span class="mut">जमा हुआ</span><b class="grn">'+money(totSub)+'</b></div><div><span class="mut">महीने के अंत में बैलेंस</span><b>'+(balEnd<0?'−':'')+money(balEnd)+'</b></div></div></div>'
+  +'<div class="chips">'+c.map(x=>'<button class="'+(f===x[0]?'on':'')+'" onclick="V.hf=\''+x[0]+'\';render()">'+x[1]+'</button>').join('')+'</div>'
+  +(filtered.length?filtered.map(x=>logRow(x,true)).join(''):'<p class="mut" style="text-align:center">इस महीने कोई इतिहास नहीं</p>')+'</div>';
+}
+
+function settingsView(){
+  const s=DB.settings;
+  return topbar('सेटिंग')+'<div class="wrap"><label>दुकान का नाम</label><input id="s1" value="'+esc(s.shop)+'">'
+  +'<label>आपकी UPI ID (पेमेंट लिंक/QR के लिए)</label><input id="s2" placeholder="जैसे: 9876543210@upi" value="'+esc(s.upi)+'">'
+  +'<label>इस ऐप का वेब लिंक (QR बैलेंस-चेक के लिए)</label><input id="s3" placeholder="https://आपकी-साइट/khata-book.html" value="'+esc(s.link)+'">'
+  +'<label>जमा लिमिट (एडवांस इतने से ज़्यादा नहीं) – 0 = कोई लिमिट नहीं</label><input id="s5" type="number" inputmode="numeric" placeholder="जैसे: 1000" value="'+esc(s.depositLimit)+'">'
+  +'<label>डिफ़ॉल्ट उधार सीमा (नए खातों के लिए, 0 = कोई सीमा नहीं)</label><input id="s6" type="number" inputmode="numeric" placeholder="जैसे: 5000" value="'+esc(s.defaultCreditLimit)+'">'
+  +'<label>ऐप PIN लॉक (खाली = बंद)</label><input id="s4" type="password" inputmode="numeric" value="'+esc(s.pin)+'">'
+  +'<button class="btn" style="width:100%" onclick="saveSettings()">सेव करें</button><hr style="margin:20px 0;border-color:var(--b)">'
+  +'<div class="acts"><button class="btn2" onclick="backup()">⬇ बैकअप डाउनलोड</button><button class="btn2" onclick="$(\'#rf\').click()">⬆ बैकअप से वापस लाएँ</button></div><input id="rf" type="file" accept=".json" style="display:none" onchange="restore(this)">'
+  +'<p class="hint">डेटा इसी फ़ोन/ब्राउज़र में सेव होता है। बैकअप नियमित डाउनलोड करते रहें।</p></div>';
+}
+function saveSettings(){const s=DB.settings;s.shop=$('#s1').value.trim()||'मेरी दुकान';s.upi=$('#s2').value.trim();s.link=$('#s3').value.trim();s.pin=$('#s4').value.trim();s.depositLimit=parseInt($('#s5').value)||0;s.defaultCreditLimit=parseInt($('#s6').value)||0;save();sessionStorage.setItem('kb_ok','1');render();toast('सेव हो गया')}
+function backup(){
+  const blob=new Blob([JSON.stringify(DB, null, 2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  a.download='khata-backup-'+new Date().toISOString().slice(0,10)+'.json';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(()=>URL.revokeObjectURL(url), 1000);
+}
+function restore(inp){const f=inp.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(!d.accounts||!Array.isArray(d.accounts))throw 0;if(!d.settings||typeof d.settings!=='object')d.settings={};if(!Array.isArray(d.log))d.log=[];if(!Array.isArray(d.stock))d.stock=[];DB=d;if(!DB.settings.shop)DB.settings.shop='मेरी दुकान';if(DB.settings.upi===undefined)DB.settings.upi='';if(DB.settings.link===undefined)DB.settings.link='';if(DB.settings.pin===undefined)DB.settings.pin='';if(!DB.settings.depositLimit)DB.settings.depositLimit=1000;if(DB.settings.defaultCreditLimit===undefined)DB.settings.defaultCreditLimit=0;DB.log.forEach(l=>{if(l.deleted===undefined)l.deleted=false});DB.accounts.forEach(a=>{if(a.limit===undefined)a.limit=0;if(a.deleted===undefined)a.deleted=false});save();render();toast('बैकअप वापस आ गया')}catch(e){toast('गलत फ़ाइल')}};r.readAsText(f)}
+
+function render(){
+  if(DB.settings.pin&&!sessionStorage.getItem('kb_ok')){$('#app').innerHTML=lockView();return}
+  let b='';
+  if(V.open){const a=get(V.open);b=a?accView(a):homeView()}
+  else b=({home:homeView,stock:stockView,deleted:deletedView,history:historyView,settings:settingsView})[V.tab]();
+  $('#app').innerHTML=b+(V.open?'':nav())+'<button class="mic" id="micBtn" onclick="openVoice()">🎤</button>';
+}
+
+function newAccModal(name){
+  const dcl=DB.settings.defaultCreditLimit||0;
+  modal('<h3>नया खाता</h3><input id="nn" placeholder="नाम" value="'+esc(name||'')+'"><input id="nm" type="tel" inputmode="numeric" maxlength="10" placeholder="मोबाइल नंबर (10 अंक)"><label>उधार सीमा (वैकल्पिक, 0 = कोई सीमा नहीं)</label><input id="nl" type="number" inputmode="numeric" placeholder="जैसे: 5000" value="'+dcl+'"><div class="row"><button class="btn" onclick="saveNew()">खाता बनाएँ</button><button class="btn2" onclick="closeModal()">रद्द</button></div>');
+}
+function saveNew(){const lim=parseInt($('#nl').value)||0;const r=createAccount($('#nn').value,$('#nm').value,'',lim);if(typeof r==='string'){toast(r);return}closeModal();V.open=r.id;render();toast('खाता बन गया')}
+function editModal(id){const a=get(id);modal('<h3>खाता सही करें</h3><input id="en" value="'+esc(a.name)+'"><input id="em" type="tel" inputmode="numeric" maxlength="10" value="'+esc(a.mobile)+'"><label>उधार सीमा (0 = कोई सीमा नहीं)</label><input id="el" type="number" inputmode="numeric" value="'+esc(a.limit||0)+'"><div class="row"><button class="btn" onclick="saveEdit(\''+id+'\')">सेव</button><button class="btn2" onclick="closeModal()">रद्द</button></div>')}
+function saveEdit(id){
+  const a=get(id),n=$('#en').value.trim(),m=h10($('#em').value),lim=parseInt($('#el').value)||0;
+  if(!n||m.length<10){toast('नाम और 10 अंक का नंबर डालिए');return}
+  if(DB.accounts.some(x=>x.id!==id&&!x.deleted&&h10(x.mobile)===m)){toast('यह नंबर किसी और खाते में है');return}
+  const old=a.name+' / '+a.mobile;a.name=n;a.mobile=m;a.limit=lim;log('edit',a,0,a.bal,a.bal,'पहले: '+old);save();closeModal();render();toast('खाता सही हो गया')
+}
+function delModal(id){const a=get(id);modal('<h3>'+esc(a.name)+' का खाता हटाएँ?</h3><p class="mut">यह "हटाए गए" में चला जाएगा, वहाँ से वापस ला सकते हैं।</p><div class="row"><button class="btn red" onclick="delAcc(\''+id+'\')">हाँ, हटाओ</button><button class="btn2" onclick="closeModal()">नहीं</button></div>')}
+function amtModal(id,sign){
+  const a=get(id);
+  const dft=sign>0?new Date(Date.now()+7*86400000).toISOString().slice(0,10):'';
+  modal('<h3>'+esc(a.name)+(sign>0?' – उधार चढ़ाओ (+)':' – पैसे घटाओ / जमा (−)')+'</h3>'
+   +'<input id="am" type="number" inputmode="decimal" placeholder="रकम ₹">'
+   +'<input id="an" placeholder="नोट (वैकल्पिक) जैसे: सामान / नकद मिले">'
+   +(sign>0?'<label>📦 सामान क्या दिया? (वैकल्पिक)</label><input id="ai" placeholder="जैसे: 2 किलो चीनी, 1 लीटर तेल">':'')
+   +(sign>0?'<label>📅 वापसी की तारीख (वैकल्पिक)</label><input id="ad" type="date" value="'+dft+'">':'')
+   +'<div class="row"><button class="btn '+(sign>0?'red':'')+'" onclick="saveAmt(\''+id+'\','+sign+')">सेव</button><button class="btn2" onclick="closeModal()">रद्द</button></div>');
+  setTimeout(()=>{const e=$('#am');if(e)e.focus();},100);
+}
+function saveAmt(id,sign){
+  const v=parseFloat($('#am').value);
+  if(!(v>0)){toast('सही रकम डालिए');return}
+  const note=$('#an').value.trim();
+  const items=$('#ai')?$('#ai').value.trim():'';
+  const dueStr=$('#ad')?$('#ad').value:'';
+  const due=dueStr?new Date(dueStr).getTime():0;
+  if(sign<0&&DB.settings.depositLimit>0){
+    const a=get(id);
+    const newBal=a.bal-v;
+    if(newBal<0&&Math.abs(newBal)>DB.settings.depositLimit){
+      _forceSaveData={id,v,note,items,due};
+      modal('<h3>⚠ जमा लिमिट ओवर!</h3><div class="warn-pop">इस खाते में ज़्यादा से ज़्यादा <b>'+money(DB.settings.depositLimit)+'</b> तक जमा हो सकता है।</div><div class="row"><button class="btn red" onclick="forceSaveAmt()">हाँ, ज़रूरी है</button><button class="btn2" onclick="closeModal()">नहीं</button></div>');
+      return;
+    }
+  }
+  const r=txn(id,sign*v,note,'',items,due);
+  if(r&&r.error==='deposit'){
+    _forceSaveData={id,v,note,items,due};
+    modal('<h3>⚠ जमा लिमिट ओवर!</h3><div class="warn-pop">जमा लिमिट <b>'+money(r.limit)+'</b> है।</div><div class="row"><button class="btn red" onclick="forceSaveAmt()">फिर भी जमा करें</button><button class="btn2" onclick="closeModal()">नहीं</button></div>');
+    return;
+  }
+  closeModal();render();toast('हो गया');
+}
+function forceSaveAmt(){
+  if(!_forceSaveData)return;
+  const{id,v,note,items,due}=_forceSaveData;
+  _forceSaveData=null;
+  const a=get(id);
+  if(!a){closeModal();return}
+  const before=a.bal;
+  a.bal=Math.round((a.bal-v)*100)/100;
+  log('sub',a,v,before,a.bal,note,'लिमिट-ओवर',items,0);
+  save();closeModal();render();toast('जमा हो गया');
+}
+
+function utf8ToB64(str){return btoa(Array.from(new TextEncoder().encode(str),c=>String.fromCharCode(c)).join(''))}
+function b64ToUtf8(b64){return new TextDecoder().decode(Uint8Array.from(atob(b64),c=>c.charCodeAt(0)))}
+function checkLink(a){
+  const base=DB.settings.link||location.href.split('#')[0];
+  const p={s:DB.settings.shop,n:a.name,h:hsh(h10(a.mobile)+'kb'),b:a.bal,u:DB.settings.upi,t:Date.now()};
+  return base+'#c='+encodeURIComponent(utf8ToB64(JSON.stringify(p)));
+}
+function upiLink(a){const s=DB.settings;if(!s.upi||a.bal<=0)return '';return 'upi://pay?pa='+encodeURIComponent(s.upi)+'&pn='+encodeURIComponent(s.shop)+'&am='+a.bal+'&cu=INR&tn='+encodeURIComponent('खाता बकाया')}
+function shareWA(id){
+  const a=get(id),s=DB.settings;let t;
+  if(a.bal>0){t='नमस्ते '+a.name+' जी,\n'+s.shop+' में आपका बकाया '+money(a.bal)+' है।\n\n🔎 अपना हिसाब देखें:\n'+checkLink(a);
+    if(s.upi)t+='\n\n💳 पेमेंट करें (UPI):\n'+upiLink(a)+'\nUPI ID: '+s.upi;t+='\n\nधन्यवाद 🙏'}
+  else if(a.bal<0)t='नमस्ते '+a.name+' जी,\n'+s.shop+' में आपका '+money(a.bal)+' एडवांस जमा है।\n'+checkLink(a)+'\nधन्यवाद 🙏';
+  else t='नमस्ते '+a.name+' जी,\n'+s.shop+' में आपका हिसाब बराबर है।\nधन्यवाद 🙏';
+  window.open('https://wa.me/91'+h10(a.mobile)+'?text='+encodeURIComponent(t),'_blank');
+}
+function showQR(id,mode){
+  const a=get(id);const data=mode==='upi'?upiLink(a):checkLink(a);
+  modal('<h3>QR – '+esc(a.name)+'</h3><div class="chips"><button class="'+(mode!=='upi'?'on':'')+'" onclick="showQR(\''+id+'\',\'chk\')">बैलेंस देखने वाला QR</button><button class="'+(mode==='upi'?'on':'')+'" onclick="showQR(\''+id+'\',\'upi\')">UPI पेमेंट QR</button></div><div id="qr"></div>'
+   +'<p class="hint">ग्राहक स्कैन करे → बैलेंस देखे।</p><div class="row"><button class="btn2" onclick="dlQR(\''+esc(a.name)+'\')">⬇ QR डाउनलोड</button><button class="btn2" onclick="closeModal()">बंद करें</button></div>');
+  if(!data){$('#qr').innerHTML='<p class="mut">UPI QR के लिए सेटिंग में UPI ID डालिए।</p>';return}
+  try{new QRCode($('#qr'),{text:data,width:230,height:230,correctLevel:QRCode.CorrectLevel.L})}catch(e){$('#qr').textContent='QR नहीं बन सका'}
+}
+function dlQR(n){
+  const c=$('#qr canvas'),img=$('#qr img');
+  let dataUrl='';
+  if(c)dataUrl=c.toDataURL('image/png');
+  else if(img)dataUrl=img.src;
+  if(!dataUrl){toast('QR नहीं है');return}
+  const a=document.createElement('a');a.href=dataUrl;a.download='qr-'+n+'.png';a.click()
+}
+
+function printStatement(id){
+  const a=get(id);const hs=DB.log.filter(l=>l.acc===id&&!l.deleted).sort((x,y)=>x.t-y.t);
+  let runBal=0;
+  const rows=hs.map(l=>{
+    let add=0,sub=0;
+    if(l.type==='add'){add=l.amt;runBal+=l.amt}
+    else if(l.type==='sub'){sub=l.amt;runBal-=l.amt}
+    return '<tr><td>'+dt(l.t)+'</td><td>'+LBL[l.type]+(l.note?'<br><small>'+esc(l.note)+'</small>':'')+'</td><td class="red">'+(add?money(add):'')+'</td><td class="grn">'+(sub?money(sub):'')+'</td><td>'+(l.items?esc(l.items):'')+'</td>'+(l.due?'<td>'+dt(l.due).split(',')[0]+'</td>':'<td></td>')+'<td>'+(runBal<0?'−':'')+money(runBal)+'</td></tr>';
+  }).join('');
+  
+  const w=window.open('','_blank');
+  if(!w){toast('कृपया Pop-up allow करें');return}
+  w.document.write('<!DOCTYPE html><html lang="hi"><head><meta charset="utf-8"><title>'+esc(a.name)+' – स्टेटमेंट</title><style>body{font-family:system-ui,sans-serif;padding:24px;max-width:680px;margin:auto;color:#1b2420}h1{color:#0b7a5c;margin:0}.hdr{display:flex;justify-content:space-between;border-bottom:3px solid #0b7a5c;padding-bottom:12px;margin-bottom:12px}.hdr small{color:#6b7a73}table{width:100%;border-collapse:collapse;margin-top:10px;font-size:13px}td,th{border:1px solid #ddd;padding:7px;text-align:left}th{background:#f2f6f4}.red{color:#d9362b;font-weight:600}.grn{color:#0b7a5c;font-weight:600}.bal{background:#f2f6f4;border-radius:10px;padding:12px;margin:12px 0;text-align:center;font-size:18px}@media print{.no-print{display:none}}</style></head><body>'
+  +'<div class="no-print" style="text-align:right;margin-bottom:15px"><button onclick="window.print()" style="background:#0b7a5c;color:#fff;border:0;border-radius:8px;padding:10px 20px;font-size:15px;cursor:pointer">🖨️ PDF डाउनलोड / प्रिंट करें</button></div>'
+  +'<div class="hdr"><div><h1>'+esc(DB.settings.shop)+'</h1><small>खाता बुक – स्टेटमेंट</small></div><div style="text-align:right"><b>'+esc(a.name)+'</b><br><small>📱 '+esc(a.mobile)+'</small></div></div>'
+  +'<div class="bal">मौजूदा बैलेंस: <b class="'+(a.bal>0?'red':a.bal<0?'grn':'')+'">'+(a.bal<0?'−':'')+money(a.bal)+'</b></div>'
+  +'<table><thead><tr><th>तारीख</th><th>ब्यौरा</th><th>उधार (+)</th><th>जमा (−)</th><th>सामान</th><th>वापसी</th><th>बैलेंस</th></tr></thead><tbody>'+rows+'</tbody></table>'
+  +'</body></html>');
+  w.document.close();
+}
+
+function bulkRemind(){
+  const accs=DB.accounts.filter(a=>!a.deleted&&a.bal>0).sort((a,b)=>{
+    const ao=isOverdue(a)?1:0,bo=isOverdue(b)?1:0;
+    if(ao!==bo)return bo-ao;
+    return b.bal-a.bal;
+  });
+  if(!accs.length){toast('कोई बकाया नहीं');return}
+  modal('<h3>'+accs.length+' ग्राहकों को याद दिलाएँ</h3><div id="bulkList" style="max-height:200px;overflow:auto;margin:8px 0">'+accs.map(a=>'<div class="item"><div><div class="n">'+esc(a.name)+'</div><div class="s">📱 '+esc(a.mobile)+'</div></div><div class="amt red">'+money(a.bal)+'</div></div>').join('')+'</div><div id="bulkProgress"></div><div class="row"><button class="btn" onclick="sendBulk(0)">शुरू करें</button><button class="btn2" onclick="closeModal()">बंद करें</button></div>');
+  window._bulkList=accs;window._bulkIdx=0;
+}
+function sendBulk(i){
+  const accs=window._bulkList||[];
+  window._bulkIdx=i+1;
+  if(i>=accs.length){$('#bulkProgress').innerHTML='<p class="grn" style="text-align:center">✓ सभी को भेज दिया!</p>';return}
+  const a=accs[i];
+  $('#bulkProgress').innerHTML='<p style="margin:8px 0">'+(i+1)+'/'+accs.length+': <b>'+esc(a.name)+'</b> को भेज रहे...</p>';
+  shareWA(a.id);
+  setTimeout(()=>{
+    if(i+1<accs.length)$('#bulkProgress').innerHTML+='<div class="row"><button class="btn" onclick="sendBulk('+(i+1)+')">अगला → ('+esc(accs[i+1].name)+')</button></div>';
+    else $('#bulkProgress').innerHTML='<p class="grn" style="text-align:center">✓ सभी को भेज दिया!</p>';
+  },1200);
+}
+
+function customerView(){
+  let p;try{p=JSON.parse(b64ToUtf8(decodeURIComponent(location.hash.slice(3))))}catch(e){return false}
+  $('#app').innerHTML='<div class="center"><h2>📒 '+esc(p.s)+'</h2><p>नमस्ते '+esc(p.n)+' जी, अपना हिसाब देखने के लिए मोबाइल नंबर डालिए</p><input id="cm" type="tel" inputmode="numeric" maxlength="10" placeholder="मोबाइल नंबर"><button class="btn" onclick="chkCust()">हिसाब देखें</button><div id="cr" style="margin-top:20px"></div></div>';
+  window.chkCust=()=>{
+    const m=h10($('#cm').value);
+    if(hsh(m+'kb')!==p.h){$('#cr').innerHTML='<p class="red">नंबर मेल नहीं खाया</p>';return}
+    let h='<div class="big"><span class="mut">'+(p.b>0?'आपका बकाया':p.b<0?'आपका एडवांस जमा':'हिसाब बराबर')+'</span><b class="'+(p.b>0?'red':'grn')+'">'+money(p.b)+'</b><small class="mut">'+dt(p.t)+' तक</small></div>';
+    if(p.b>0&&p.u)h+='<a class="btn" style="display:block;text-decoration:none" href="upi://pay?pa='+encodeURIComponent(p.u)+'&pn='+encodeURIComponent(p.s)+'&am='+p.b+'&cu=INR">💳 UPI से पेमेंट करें</a>';
+    $('#cr').innerHTML=h;
+  };
+  return true;
+}
+
+/* =====================================================================
+   आवाज़ सहायक v2 — ऐप की लगभग हर चीज़ आवाज़ (या टाइप किए कमांड) से
+   ===================================================================== */
+const nz=s=>String(s).normalize('NFC').replace(/\u093C/g,'').replace(/ँ/g,'ं');
+const rx=(s,f)=>new RegExp(nz(s),f||'');
+const has=(t,p)=>rx(p).test(t);
+const norm=s=>nz(s).toLowerCase().replace(/₹/g,' रुपये ').replace(/[०-९]/g,d=>'0123456789'['०१२३४५६७८९'.indexOf(d)]).replace(/(\d),(?=\d{3}(?!\d))/g,'$1').replace(/\.(?!\d)/g,' ').replace(/[।,?!;:]/g,' ').replace(/\s+/g,' ').trim();
+
+/* ---- हिंदी संख्याएँ 1–99 ---- */
+const N1=['एक','दो','तीन','चार','पांच','छह','सात','आठ','नौ','दस',
+'ग्यारह','बारह','तेरह','चौदह','पंद्रह','सोलह','सत्रह','अठारह','उन्नीस','बीस',
+'इक्कीस','बाईस','तेईस','चौबीस','पच्चीस','छब्बीस','सत्ताईस','अट्ठाईस','उनतीस','तीस',
+'इकतीस','बत्तीस','तैंतीस','चौंतीस','पैंतीस','छत्तीस','सैंतीस','अड़तीस','उनतालीस','चालीस',
+'इकतालीस','बयालीस','तैंतालीस','चवालीस','पैंतालीस','छियालीस','सैंतालीस','अड़तालीस','उनचास','पचास',
+'इक्यावन','बावन','तिरपन','चौवन','पचपन','छप्पन','सत्तावन','अट्ठावन','उनसठ','साठ',
+'इकसठ','बासठ','तिरसठ','चौंसठ','पैंसठ','छियासठ','सड़सठ','अड़सठ','उनहत्तर','सत्तर',
+'इकहत्तर','बहत्तर','तिहत्तर','चौहत्तर','पचहत्तर','छिहत्तर','सतहत्तर','अठहत्तर','उनासी','अस्सी',
+'इक्यासी','बयासी','तिरासी','चौरासी','पचासी','छियासी','सत्तासी','अट्ठासी','नवासी','नब्बे',
+'इक्यानवे','बानवे','तिरानवे','चौरानवे','पंचानवे','छियानवे','सत्तानवे','अट्ठानवे','निन्यानवे'];
+const NUMW={};
+N1.forEach((w,i)=>{NUMW[nz(w)]=i+1});
+[['शून्य',0],['जीरो',0],['ज़ीरो',0],['पाँच',5],['छः',6],['छे',6],['सताईस',27],['अठाईस',28],['अठ्ठाईस',28],['अठ्ठावन',58],['सैतीस',37],['पैतीस',35]].forEach(([w,v])=>{NUMW[nz(w)]=v});
+const MULW={'सौ':100,'हजार':1000,'लाख':100000};
+const isNumTok=w=>w!==undefined&&(/^\d+(\.\d+)?k?$/.test(w)||NUMW[w]!==undefined);
+const isMulTok=w=>w!==undefined&&MULW[w]!==undefined;
+const numVal=w=>/^\d/.test(w)?(w.endsWith('k')?parseFloat(w)*1000:parseFloat(w)):NUMW[w];
+const isDigTok=w=>w!==undefined&&(/^\d+$/.test(w)||(NUMW[w]!==undefined&&NUMW[w]<=9));
+const digOf=w=>/^\d+$/.test(w)?w:String(NUMW[w]);
+
+function findRuns(tk){
+  const runs=[];let i=0;
+  while(i<tk.length){
+    if(isNumTok(tk[i])||isMulTok(tk[i])){
+      let j=i,tot=0,cur=0;
+      while(j<tk.length&&(isNumTok(tk[j])||isMulTok(tk[j]))){
+        const x=tk[j];
+        if(isMulTok(x)){if(x==='सौ')cur=(cur||1)*100;else{tot+=(cur||1)*MULW[x];cur=0}}
+        else cur+=numVal(x);
+        j++;
+      }
+      runs.push({s:i,e:j,v:tot+cur});i=j;
+    }else i++;
+  }
+  return runs;
+}
+function phoneGroup(tk){
+  let i=0;
+  while(i<tk.length){
+    if(isDigTok(tk[i])){
+      let j=i,s='';
+      while(j<tk.length&&isDigTok(tk[j])){s+=digOf(tk[j]);j++}
+      if(s.length>=10)return{s:i,e:j,num:s.slice(-10)};
+      i=j;
+    }else i++;
+  }
+  return null;
+}
+function phoneOnly(t){
+  const tk=t.split(' ');const pg=phoneGroup(tk);
+  if(pg)return pg.num;
+  const s=tk.filter(isDigTok).map(digOf).join('');
+  return s.length>=10?s.slice(-10):'';
+}
+const CUR=['रुपये','रुपए','रुपया','रूपये','रुपैया','रु','rs'];
+const QU=['किलो','kg','किलोग्राम','लीटर','लिटर','ग्राम','पैकेट','पीस','दर्जन','बोरी','डिब्बा','बोतल','पाव','पैक','कट्टा'];
+const UNITS=QU.concat(['दिन','दिनों','हफ्ते','हफ्ता','सप्ताह','महीने','महीना','तारीख']);
+const MONN={};[['जनवरी',1],['फरवरी',2],['मार्च',3],['अप्रैल',4],['मई',5],['जून',6],['जुलाई',7],['अगस्त',8],['सितंबर',9],['सितम्बर',9],['अक्टूबर',10],['अक्तूबर',10],['नवंबर',11],['नवम्बर',11],['दिसंबर',12],['दिसम्बर',12]].forEach(([k,v])=>{MONN[nz(k)]=v});
+const MN_HI=['','जनवरी','फरवरी','मार्च','अप्रैल','मई','जून','जुलाई','अगस्त','सितंबर','अक्टूबर','नवंबर','दिसंबर'];
+
+function pickAmount(tk,runs,it,lim){
+  const c=runs.filter(r=>r.s<lim&&r.v>0&&!(it&&r.s>=it.s&&r.s<it.e)&&!(UNITS.includes(tk[r.e]))&&!(MONN[tk[r.e]])&&tk[r.s-1]!=='नंबर'&&!(tk[r.s].length>=7&&/^\d+$/.test(tk[r.s])));
+  if(!c.length)return null;
+  const c1=c.find(r=>CUR.includes(tk[r.e])||CUR.includes(tk[r.s-1]));
+  return (c1||c[0]).v;
+}
+function parseAmount(t){
+  let tk=t.split(' ');const pg=phoneGroup(tk);
+  if(pg)tk=tk.slice(0,pg.s).concat(tk.slice(pg.e));
+  return pickAmount(tk,findRuns(tk),null,tk.length);
+}
+
+const ISTOP=['वापसी','तारीख','नोट','रुपये','रुपए','रुपया','रु','rs','दिया','दिए','उधार','प्लस','जोड़ो','जोड','चढा','चढाओ','लिख','लिखो','को','ने','का','की','जमा','माइनस'].map(nz);
+function parseItems(tk){
+  let s=-1;
+  const k=tk.indexOf('सामान');
+  if(k>=0)s=k+1;
+  else{for(let i=1;i<tk.length;i++){if(QU.includes(tk[i])&&isNumTok(tk[i-1])){s=i-1;while(s>0&&isNumTok(tk[s-1]))s--;break}}}
+  if(s<0||s>=tk.length)return null;
+  let e=s;
+  while(e<tk.length){
+    const w=tk[e];
+    if(ISTOP.includes(w))break;
+    if(isNumTok(w)&&e>s&&!QU.includes(tk[e+1]))break;
+    e++;
+  }
+  const text=tk.slice(s,e).join(' ').trim();
+  return text?{s,e,text}:null;
+}
+function dayStart(add){const d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()+add);return d}
+function parseDue(tk){
+  const t=tk.join(' ');
+  if(!has(t,'(वापसी|तारीख|देगा|देगी|लौटा|चुका|तक)'))return 0;
+  for(let i=0;i<tk.length;i++){
+    if(isNumTok(tk[i])&&isNumTok(tk[i])&&MONN[tk[i+1]]){
+      const now=new Date();let y=now.getFullYear();
+      const yr=tk[i+2]&&/^20\d\d$/.test(tk[i+2])?+tk[i+2]:0;
+      let d=new Date(yr||y,MONN[tk[i+1]]-1,numVal(tk[i]));
+      if(!yr&&d<dayStart(0))d=new Date(y+1,MONN[tk[i+1]]-1,numVal(tk[i]));
+      return d.getTime();
+    }
+    if(isNumTok(tk[i])&&['दिन','दिनों','हफ्ते','हफ्ता','सप्ताह','महीने','महीना'].includes(tk[i+1])){
+      const u=tk[i+1];const mul=/^दिन/.test(u)?1:/^(हफ्त|सप्ता)/.test(u)?7:30;
+      return dayStart(Math.round(numVal(tk[i])*mul)).getTime();
+    }
+  }
+  if(tk.includes('परसों'))return dayStart(2).getTime();
+  if(tk.includes('कल'))return dayStart(1).getTime();
+  if(has(t,'अगले हफ्ते|अगले सप्ताह'))return dayStart(7).getTime();
+  if(has(t,'अगले महीने'))return dayStart(30).getTime();
+  return 0;
+}
+const MINUS_W=new Set(['घटा','घटाओ','घटाइए','घटाना','माइनस','कम','जमा','मिले','मिला','मिली','चुका','चुकाए','चुकाया','चुकता','लौटा','लौटाए','लौटाया','minus','subtract','कट','कटा','कटवा','भरे','भरा','आए','आया','आई'].map(nz));
+const PLUS_W=new Set(['जोड़','जोड़ो','जोड़ना','प्लस','चढ़ा','चढ़ाओ','चढ़ाना','उधार','दिया','दिए','दी','बढ़ा','बढ़ाओ','लिख','लिखो','plus','add','लिया'].map(nz));
+function direction(t){
+  t=t.replace(/दे (दिए|दिये|दिया|दी)( |$)/g,'चुका ');
+  const tk=t.split(' ');let mi=-1,pi=-1;
+  for(let i=0;i<tk.length;i++){
+    if(mi<0&&(MINUS_W.has(tk[i])||(tk[i]==='वापस'&&['दिए','किए','कर','किया','दिया'].includes(tk[i+1]))))mi=i;
+    if(pi<0&&PLUS_W.has(tk[i]))pi=i;
+  }
+  if(mi<0&&pi<0)return 0;if(pi<0)return -1;if(mi<0)return 1;return mi<pi?-1:1;
+}
+function extractTxn(t){
+  let tk=t.split(' ');
+  const pg=phoneGroup(tk);if(pg)tk=tk.slice(0,pg.s).concat(tk.slice(pg.e));
+  const it=parseItems(tk);
+  const ni=tk.indexOf('नोट');
+  const lim=ni>=0?ni:tk.length;
+  return{amt:pickAmount(tk,findRuns(tk),it,lim),items:it?it.text:'',due:parseDue(tk),note:ni>=0?tk.slice(ni+1).join(' '):''};
+}
+const VERB_END=/(?:^|\s+)(?:रख\s*दो|रख\s*दीजिए|रखो|रखें|कर\s*दो|कर\s*दीजिए|करो|करें|कर|बदल\s*दो|बदलो|है|हो)\s*$/;
+function afterKey(raw,keyRx){
+  const m=raw.match(keyRx);if(!m)return '';
+  let s=raw.slice(m.index+m[0].length).trim();
+  s=s.replace(/^(बदलकर|बदल\s*कर|बदलो|बदलें|सेट\s*करो|सेट|को|है|:|-)\s*/,'').trim();
+  for(let k=0;k<2;k++)s=s.replace(VERB_END,'').trim();
+  return s;
+}
+const sp=n=>String(Math.round(Math.abs(n)*100)/100)+' रुपये';
+const balText=a=>a.bal>0?sp(a.bal)+' उधार बाकी हैं':a.bal<0?sp(a.bal)+' एडवांस जमा हैं':'हिसाब बराबर है';
+const digitsSp=s=>String(s).split('').join(' ');
+
+/* ---- खाता पहचान ---- */
+function matchAccs(t,list){
+  const pad=' '+t+' ';
+  const full=list.filter(a=>{const n=norm(a.name);return n&&pad.includes(' '+n+' ')});
+  if(full.length){const mx=Math.max(...full.map(a=>norm(a.name).length));return full.filter(a=>norm(a.name).length===mx)}
+  const words=t.split(' ');
+  return list.filter(a=>norm(a.name).split(' ').some(p=>p.length>1&&words.some(w=>w===p||(p.length>=3&&w.startsWith(p)))));
+}
+const ORDM={};
+[['पहला',0],['पहली',0],['पहले',0],['एक',0],['1',0],['दूसरा',1],['दूसरी',1],['दूसरे',1],['दो',1],['2',1],['तीसरा',2],['तीसरी',2],['तीन',2],['3',2],['चौथा',3],['चौथी',3],['चार',3],['4',3],['पांचवा',4],['पांचवां',4],['पांचवी',4],['पांच',4],['5',4]].forEach(([k,v])=>{ORDM[nz(k)]=v});
+function pickIndex(t,c){
+  const tk=t.split(' ');
+  const d=tk.filter(isDigTok).map(digOf).join('');
+  if(d.length>=3){const i=c.findIndex(a=>a.mobile.endsWith(d));if(i>=0)return i}
+  for(const w of tk){if(ORDM[w]!==undefined&&ORDM[w]<c.length)return ORDM[w]}
+  const m=c.filter(a=>t.includes(norm(a.name)));
+  if(m.length===1)return c.indexOf(m[0]);
+  return -1;
+}
+const ORDN=['पहला','दूसरा','तीसरा','चौथा','पांचवां'];
+
+/* ---- बातचीत की स्थिति ---- */
+let P=null;           // अधूरा सवाल: {h:(raw,t)=>जवाब}
+let closeLater=false;
+function ask(msg,h){P={h};return msg}
+function confirmAct(msg,fn){
+  P={h:(raw,t)=>{
+    if(has(t,'^(हां|हा|जी|जी हां|ठीक|ठीक है|ओके|ok|okay|yes|करो|कर दो|कर दीजिए|पक्का|बिल्कुल|सही है)( |$)')){P=null;return fn()}
+    if(has(t,'^(नहीं|नही|ना|मत|no|रुको|ठहरो|रहने दो)( |$)')){P=null;return 'ठीक है, रद्द कर दिया।'}
+    return 'हाँ या नहीं बोलिए।';
+  }};
+  return msg+' हाँ या नहीं?';
+}
+function askPick(c,raw){
+  P={h:(r2,t2)=>{
+    const i=pickIndex(t2,c);
+    if(i<0)return 'समझ नहीं आया। पहला, दूसरा जैसा बोलिए या मोबाइल के आखिरी चार अंक बोलिए।';
+    P=null;return runCommand(raw,c[i]);
+  }};
+  return 'इस नाम के '+c.length+' खाते हैं। '+c.map((a,i)=>(ORDN[i]||String(i+1))+': '+a.name+', मोबाइल के आखिरी चार अंक '+digitsSp(a.mobile.slice(-4))).join('। ')+'। किस खाते पर करना है?';
+}
+
+/* ---- काम करने वाले हिस्से ---- */
+function delHistoryByVoice(a){
+  const cnt=DB.log.filter(l=>l.acc===a.id&&!l.deleted).length;
+  if(cnt===0)return a.name+' के खाते में कोई इतिहास नहीं है।';
+  DB.log.forEach(l=>{if(l.acc===a.id&&!l.deleted){l.deleted=true;l.deletedAt=Date.now()}});
+  log('logdel',a,0,a.bal,a.bal,'वॉयस से पूरी हिस्ट्री साफ़ की गई');
+  save();render();
+  return a.name+' की '+cnt+' एंट्री वाली पूरी हिस्ट्री साफ़ कर दी। बैलेंस '+sp(a.bal)+' ही रहेगा, बैलेंस नहीं बदला।';
+}
+function delLastTxnByVoice(a){
+  const hs=DB.log.filter(l=>l.acc===a.id&&!l.deleted&&(l.type==='add'||l.type==='sub')).sort((x,y)=>y.t-x.t);
+  if(!hs.length)return a.name+' के खाते में कोई लेन-देन नहीं है।';
+  const last=hs[0],before=a.bal;
+  a.bal=Math.round((a.bal+(last.type==='add'?-last.amt:last.amt))*100)/100;
+  last.deleted=true;last.deletedAt=Date.now();
+  log('logdel',a,0,before,a.bal,'वॉयस से आखिरी एंट्री हटाई: '+LBL[last.type]+' '+money(last.amt));
+  save();render();
+  return a.name+' की आखिरी एंट्री ('+LBL[last.type]+' '+sp(last.amt)+') हटा दी और बैलेंस वापस कर दिया। अब '+balText(a)+'।';
+}
+function delEntryByVoice(a,l){
+  l.deleted=true;l.deletedAt=Date.now();
+  log('logdel',a,0,a.bal,a.bal,'वॉयस से एंट्री हटाई: '+LBL[l.type]+(l.amt?' '+money(l.amt):''));
+  save();render();
+  return 'वह एंट्री इतिहास से हटा दी। बैलेंस नहीं बदला, '+balText(a)+'।';
+}
+function applyTxn(a,sign,amt,x,force){
+  if(sign<0&&!force&&DB.settings.depositLimit>0){
+    const nb=a.bal-amt;
+    if(nb<0&&Math.abs(nb)>DB.settings.depositLimit)
+      return confirmAct('जमा लिमिट '+sp(DB.settings.depositLimit)+' है और इससे ज़्यादा एडवांस हो जाएगा। फिर भी जमा करूँ?',()=>applyTxn(a,sign,amt,x,true));
+  }
+  if(force){
+    const before=a.bal;a.bal=Math.round((a.bal-amt)*100)/100;
+    log('sub',a,amt,before,a.bal,x.note,'लिमिट-ओवर',x.items,0);save();
+  }else{
+    const r=txn(a.id,sign*amt,x.note,'आवाज़',x.items,sign>0?x.due:0);
+    if(r&&r.error)return 'जमा लिमिट '+sp(r.limit)+' है।';
+  }
+  render();
+  let m=a.name+' के खाते में '+sp(amt)+(sign<0?' घटा दिए गए।':' जोड़ दिए गए।');
+  if(x.items&&sign>0)m+=' सामान: '+x.items+'।';
+  if(x.due&&sign>0)m+=' वापसी तारीख '+dt(x.due).split(',')[0]+' रखी।';
+  m+=' अब '+balText(a)+'।';
+  if(sign>0&&a.limit>0&&a.bal>a.limit)m+=' ध्यान दें, उधार सीमा '+sp(a.limit)+' पार हो गई है।';
+  return m;
+}
+function doTxnVoice(a,t){
+  const x=extractTxn(t);
+  if(!(x.amt>0))return 'रकम समझ नहीं आई। फिर से बोलिए।';
+  const dir=direction(t);
+  if(dir===0){
+    return ask(sp(x.amt)+' उधार चढ़ाऊँ या जमा करूँ? उधार या जमा बोलिए।',(r2,t2)=>{
+      const d=direction(t2.replace(/\bजमा\b/,'जमा'));
+      if(d===0)return 'उधार या जमा बोलिए।';
+      P=null;return applyTxn(a,d,x.amt,x,false);
+    });
+  }
+  return applyTxn(a,dir,x.amt,x,false);
+}
+function renameAcc(a,name){
+  name=(name||'').trim();
+  if(!name)return 'नाम समझ नहीं आया।';
+  const old=a.name+' / '+a.mobile;a.name=name;log('edit',a,0,a.bal,a.bal,'पहले: '+old);save();render();
+  return 'खाते का नाम अब '+name+' है।';
+}
+function changeMobile(a,num){
+  if(!num||num.length<10)return 'मोबाइल नंबर 10 अंक का होना चाहिए।';
+  if(DB.accounts.some(x=>x.id!==a.id&&!x.deleted&&h10(x.mobile)===num))return 'यह नंबर किसी और खाते में है।';
+  const old=a.name+' / '+a.mobile;a.mobile=num;log('edit',a,0,a.bal,a.bal,'पहले: '+old);save();render();
+  return a.name+' का मोबाइल नंबर बदल दिया, आखिरी चार अंक '+digitsSp(num.slice(-4))+'।';
+}
+function setAccLimit(a,v){
+  a.limit=v;log('edit',a,0,a.bal,a.bal,'लिमिट बदलकर '+v+' की गई');save();render();
+  return v>0?a.name+' की उधार सीमा अब '+sp(v)+' कर दी।':a.name+' की उधार सीमा हटा दी।';
+}
+function totalsText(){
+  const act=DB.accounts.filter(a=>!a.deleted);
+  const owe=act.reduce((s,a)=>s+Math.max(a.bal,0),0),adv=act.reduce((s,a)=>s+Math.max(-a.bal,0),0);
+  const ovr=act.filter(isOverdue).length;
+  return 'कुल '+act.length+' खाते हैं। कुल उधार बाकी '+sp(owe)+', कुल एडवांस जमा '+sp(adv)+'।'+(ovr?' '+ovr+' खातों की वापसी तारीख बीत चुकी है।':'');
+}
+function parseMonth(t,tk){
+  const now=new Date();
+  if(has(t,'(पिछले महीने|पिछला महीना|बीते महीने|last month)')){const d=new Date(now.getFullYear(),now.getMonth()-1,1);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')}
+  if(has(t,'(इस महीने|इस माह|चालू महीने)'))return now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0');
+  for(let i=0;i<tk.length;i++){
+    if(MONN[tk[i]]){
+      let y=now.getFullYear();const m=MONN[tk[i]];
+      const yr=tk.find(w=>/^20\d\d$/.test(w));
+      if(yr)y=+yr;else if(m>now.getMonth()+1)y--;
+      return y+'-'+String(m).padStart(2,'0');
+    }
+  }
+  return null;
+}
+function monthText(v){
+  const [yy,mm]=v.split('-').map(Number);
+  const ms=DB.log.filter(l=>{if(l.deleted)return false;const d=new Date(l.t);return d.getFullYear()===yy&&d.getMonth()+1===mm});
+  const a=ms.filter(l=>l.type==='add').reduce((s,l)=>s+l.amt,0),b=ms.filter(l=>l.type==='sub').reduce((s,l)=>s+l.amt,0);
+  return MN_HI[mm]+' '+yy+' का इतिहास खुल गया। इस महीने उधार '+sp(a)+' बढ़ा और '+sp(b)+' जमा हुआ।';
+}
+function stockCmd(t,raw){
+  const hasS=t.includes('स्टॉक');
+  if(hasS&&has(t,'(खोल|दिखा|जाओ|चलो|टैब)')&&!has(t,'(बता|पढ़|सुना)')){go('stock');return 'खत्म स्टॉक खोल दिया। '+(DB.stock.length?DB.stock.length+' सामान खत्म हैं।':'कोई सामान खत्म नहीं है।')}
+  if(hasS&&has(t,'(हटा|साफ|खाली|मिटा|डिलीट)')&&has(t,'(सारा|सब|पूरा|पूरी|सारी|सभी)')){
+    if(!DB.stock.length)return 'स्टॉक सूची पहले से खाली है।';
+    return confirmAct('खत्म स्टॉक की पूरी सूची, '+DB.stock.length+' सामान, हटानी है?',()=>{DB.stock=[];save();render();return 'पूरी स्टॉक सूची साफ़ कर दी।'});
+  }
+  if(has(t,'(आ गया|आ गई|आ गए|आ गये|मिल गया|मिल गई|मंगा लिया|मंगवा लिया|आ चुका|आ चुकी|भर गया|आ गयी)')){
+    const hits=DB.stock.filter(s=>t.includes(norm(s.name)));
+    if(hits.length){const ids=hits.map(s=>s.id);DB.stock=DB.stock.filter(s=>!ids.includes(s.id));save();render();return hits.map(s=>s.name).join(' और ')+' स्टॉक सूची से हटा दिया।'}
+    if(hasS)return 'यह सामान खत्म सूची में नहीं मिला।';
+    return null;
+  }
+  if(hasS&&has(t,'(व्हाट्सएप|whatsapp|भेज|शेयर)')){
+    if(!DB.stock.length)return 'सूची खाली है, भेजने को कुछ नहीं।';
+    shareStock();return 'खत्म स्टॉक की सूची व्हाट्सएप पर भेजने के लिए खोल दी।';
+  }
+  if((hasS&&has(t,'(बता|पढ़|सुना|क्या|कौन|कितने|सूची|लिस्ट)'))||has(t,'(क्या क्या खत्म|कौन सा सामान खत्म|क्या खत्म|कितना सामान खत्म)')){
+    if(!DB.stock.length)return 'कोई सामान खत्म नहीं है।';
+    return 'खत्म सामान: '+DB.stock.map(s=>s.name+(s.note?' '+s.note:'')).join(', ')+'।';
+  }
+  if(t.includes('खत्म')||(hasS&&has(t,'(जोड़|चढ़ा|चढा|लिख|ऐड|add)'))){
+    const SW=new Set(['खत्म','हो','गया','गई','गए','गये','गयी','है','हैं','स्टॉक','में','जोड़ो','जोड','चढाओ','चढा','लिखो','लिख','करो','कर','सामान','लिस्ट','सूची','का','की','के','अब','नया','नई','भी','ऐड','add','कृपया','प्लीज','please','सब','पूरा','मेरा','मेरी'].map(nz));
+    const tk=t.split(' ');const groups=[{n:[],q:[]}];
+    tk.forEach((w,i)=>{
+      if(w==='और'){groups.push({n:[],q:[]});return}
+      if(w==='दो'&&(i===tk.length-1||['जोड','लिख','चढा','कर','जोड़'].includes(tk[i-1])))return;
+      if(SW.has(w))return;
+      const g=groups[groups.length-1];
+      if(isNumTok(w)||QU.includes(w))g.q.push(w);else g.n.push(w);
+    });
+    const items=groups.filter(g=>g.n.length);
+    if(!items.length)return ask('कौन सा सामान खत्म हुआ? नाम बोलिए।',(r2,t2)=>{
+      const nm=t2.trim();if(!nm)return 'सामान का नाम बोलिए।';P=null;DB.stock.unshift({id:uid(),name:nm,note:'',t:Date.now()});save();render();return nm+' खत्म स्टॉक में जोड़ दिया।';
+    });
+    items.forEach(g=>DB.stock.unshift({id:uid(),name:g.n.join(' '),note:g.q.join(' '),t:Date.now()}));
+    save();render();
+    return items.map(g=>g.n.join(' ')+(g.q.length?' ('+g.q.join(' ')+')':'')).join(' और ')+' खत्म स्टॉक में जोड़ दिया।';
+  }
+  return null;
+}
+function helpSpeech(){
+  return 'मैं ये सब कर सकता हूँ: नया खाता बनाना, उधार और जमा चढ़ाना सामान और वापसी तारीख के साथ, बैलेंस और इतिहास बताना, नाम, नंबर और सीमा बदलना, खाता हटाना या वापस लाना, एंट्री हटाना, स्टॉक जोड़ना या हटाना, सेटिंग बदलना, महीने का इतिहास खोलना, कुल उधार बताना, सबको याद दिलाना, क्यूआर, स्टेटमेंट और बैकअप। नीचे पूरी सूची भी है।';
+}
+
+/* ================== मुख्य कमांड ================== */
+function runCommand(raw,forced){
+  const t=norm(raw);if(!t)return '';
+  if(P){
+    if(has(t,'^(रद्द|कैंसल|cancel|छोड़ो|रहने दो|बस रहने दो)( |$)')){P=null;return 'ठीक है, रद्द कर दिया।'}
+    return P.h(raw,t);
+  }
+  const tk=t.split(' ');
+  if(has(t,'^(असिस्टेंट बंद|बंद करो|बंद कर दो|बस करो|धन्यवाद|थैंक यू|थैंक्स|अलविदा)( |$)')||has(t,'^(बस|बाय)$')){closeLater=true;return 'ठीक है, असिस्टेंट बंद कर रहा हूँ। धन्यवाद!'}
+  if(has(t,'(मदद|हेल्प|help|क्या क्या कर सकते|क्या कर सकते|कमांड सूची)'))return helpSpeech();
+
+  /* हटाए गए खाते: वापस लाना / हमेशा के लिए हटाना */
+  if(has(t,'(वापस ला|रिस्टोर|बहाल|हमेशा के लिए|पूरा हटा|पूरी तरह हटा|परमानेंट|permanent)')){
+    const isPurge=has(t,'(हमेशा के लिए|पूरा हटा|पूरी तरह हटा|परमानेंट|permanent)');
+    const c=forced&&forced.deleted?[forced]:matchAccs(t,DB.accounts.filter(a=>a.deleted));
+    if(!c.length)return 'हटाए गए खातों में यह नाम नहीं मिला।';
+    if(c.length>1)return askPick(c,raw);
+    const a=c[0];
+    if(isPurge)return confirmAct(a.name+' का खाता हमेशा के लिए हटाना है?',()=>{purgeAcc(a.id);return a.name+' का खाता हमेशा के लिए हटा दिया।'});
+    restoreAcc(a.id);return a.name+' का खाता वापस आ गया।';
+  }
+
+  /* नया खाता */
+  if(has(t,'((नया|नए|नई) (खाता|ग्राहक|अकाउंट)|खाता बना|अकाउंट बना|ग्राहक जोड़|खाता जोड़)')){
+    const pg=phoneGroup(tk);
+    let nameT=tk.filter((w,i)=>!(pg&&i>=pg.s&&i<pg.e)).join(' ').replace(rx('(नया|नए|नई|खाता|ग्राहक|अकाउंट|बनाओ|बनाना|बना|दो|जोड़ो|जोड़|नाम|का|की|मोबाइल|नंबर|है|से|के लिए|एक|और|कृपया)','g'),' ').replace(/\s+/g,' ').trim();
+    return newAccFlow({name:nameT,mobile:pg?pg.num:''});
+  }
+
+  /* खाता पहचान */
+  let named=forced&&!forced.deleted?forced:null,amb=null;
+  if(!named){
+    const act=DB.accounts.filter(a=>!a.deleted);
+    const pg=phoneGroup(tk);
+    const byPh=pg?act.find(a=>h10(a.mobile)===pg.num):null;
+    if(byPh)named=byPh;
+    else{const m=matchAccs(t,act);if(m.length===1)named=m[0];else if(m.length>1)amb=m}
+  }
+  const openAccObj=V.open?get(V.open):null;
+  const ctx=named||(openAccObj&&!openAccObj.deleted?openAccObj:null);
+
+  /* स्टॉक */
+  if((t.includes('स्टॉक')||t.includes('खत्म')||has(t,'(आ गया|आ गई|आ गए|आ गये|मिल गया|मंगा लिया|मंगवा लिया|आ चुका)'))&&(!named||t.includes('स्टॉक'))){
+    const r=stockCmd(t,raw);if(r!==null)return r;
+  }
+
+  /* सेटिंग */
+  if(has(t,'(दुकान|शॉप|shop) (का|की) नाम|दुकान नाम')){
+    const nm=afterKey(raw,/(?:दुकान|शॉप|shop)\s*(?:का|की)?\s*नाम/i);
+    const setN=n=>{DB.settings.shop=n;save();render();return 'दुकान का नाम '+n+' कर दिया।'};
+    if(nm)return setN(nm);
+    return ask('दुकान का नया नाम बोलिए।',(r2)=>{const n=r2.trim();if(!n)return 'नाम बोलिए।';P=null;return setN(n)});
+  }
+  if(has(t,'(यूपीआई|upi|यू पी आई)')&&!has(t,'(क्यूआर|qr)')&&has(t,'(आईडी|id|आई डी|सेट|बदल|रख|अपडेट|हटा|खाली)')){
+    if(has(t,'(हटा|खाली)')){DB.settings.upi='';save();render();return 'UPI ID हटा दी।'}
+    let s=afterKey(raw,/(?:यूपीआई|यू\s*पी\s*आई|upi)\s*(?:आईडी|आई\s*डी|id)?/i).toLowerCase();
+    s=s.replace(/\s*(एट\s*द\s*रेट|at\s*the\s*rate|एट)\s*/g,'@').replace(/\s+/g,'');
+    if(/^[a-z0-9._\-]{2,}@[a-z0-9]{2,}$/.test(s)){DB.settings.upi=s;save();render();return 'UPI ID सेट हो गई।'}
+    return 'UPI ID बोलकर सही नहीं आती। नीचे बॉक्स में टाइप करके भेजिए, जैसे: UPI ID name@upi';
+  }
+  if(/https?:\/\/\S+/i.test(raw)&&has(t,'(लिंक|link|वेब)')){
+    DB.settings.link=raw.match(/https?:\/\/\S+/i)[0];save();render();return 'ऐप का वेब लिंक सेट कर दिया।';
+  }
+  if(has(t,'(पिन|pin)')&&!named){
+    if(has(t,'(हटा|बंद|खत्म|रिमूव|खाली)')){
+      if(!DB.settings.pin)return 'PIN पहले से बंद है।';
+      return confirmAct('ऐप का PIN लॉक बंद करना है?',()=>{DB.settings.pin='';save();render();return 'PIN लॉक बंद कर दिया।'});
+    }
+    const d=tk.filter(isDigTok).map(digOf).join('');
+    if(d.length>=4&&d.length<=6){DB.settings.pin=d;save();sessionStorage.setItem('kb_ok','1');render();return 'PIN सेट हो गया। सुरक्षा के लिए अंक नहीं दोहरा रहा।'}
+    return ask('4 से 6 अंकों का नया PIN बोलिए या नीचे टाइप कीजिए।',(r2,t2)=>{
+      const dd=t2.split(' ').filter(isDigTok).map(digOf).join('');
+      if(dd.length<4||dd.length>6)return 'PIN 4 से 6 अंक का होना चाहिए।';
+      P=null;DB.settings.pin=dd;save();sessionStorage.setItem('kb_ok','1');render();return 'PIN सेट हो गया।';
+    });
+  }
+  if(has(t,'(जमा|एडवांस) (लिमिट|सीमा)')||(has(t,'(डिफॉल्ट|नए खातों|नये खातों|सभी खातों|सब खातों)')&&has(t,'(लिमिट|सीमा)'))){
+    const isDep=has(t,'(जमा|एडवांस) (लिमिट|सीमा)');
+    const zero=has(t,'(बिना|हटा|कोई लिमिट नहीं|कोई सीमा नहीं|शून्य|जीरो|खत्म)');
+    const v=zero?0:parseAmount(t);
+    const apply=n=>{if(isDep)DB.settings.depositLimit=n;else DB.settings.defaultCreditLimit=n;save();render();return (isDep?'जमा लिमिट ':'डिफ़ॉल्ट उधार सीमा ')+(n>0?sp(n):'बंद')+' कर दी।'};
+    if(v!==null&&v>=0)return apply(v);
+    return ask((isDep?'जमा लिमिट':'डिफ़ॉल्ट उधार सीमा')+' कितनी रखनी है? शून्य बोलें तो कोई लिमिट नहीं।',(r2,t2)=>{
+      const z=has(t2,'(बिना|कोई नहीं|शून्य|जीरो)')?0:parseAmount(t2);
+      if(z===null)return 'रकम समझ नहीं आई, फिर बोलिए।';P=null;return apply(z);
+    });
+  }
+
+  /* बैकअप / सबको याद दिलाना / अगला */
+  if(has(t,'(बैकअप|backup)')&&has(t,'(डाउनलोड|बनाओ|करो|ले लो|निकालो|सेव)')){backup();return 'बैकअप फ़ाइल डाउनलोड हो रही है।'}
+  if(!named&&has(t,'(सबको|सभी को|सारे ग्राहकों|सब ग्राहकों|सबके पास)')&&has(t,'(याद|रिमाइंडर|मैसेज|व्हाट्सएप|भेज)')){
+    const n=DB.accounts.filter(a=>!a.deleted&&a.bal>0).length;
+    if(!n)return 'किसी का बकाया नहीं है।';
+    bulkRemind();return n+' ग्राहकों की सूची खुल गई। शुरू करने के लिए "शुरू करो" बोलिए, फिर "अगला"। पॉप-अप की अनुमति ज़रूरी है।';
+  }
+  if(window._bulkList&&$('#bulkProgress')&&has(t,'^(शुरू करो|शुरू|अगला|आगे|भेजो|अगले को भेजो)( |$)')){
+    const i=window._bulkIdx||0;sendBulk(i);
+    return i>=window._bulkList.length?'सभी को भेज दिया।':(i+1)+' में से '+(i+1)+', '+window._bulkList[i].name+' का संदेश खोल दिया।';
+  }
+
+  /* रिपोर्ट */
+  if(!named){
+    if(has(t,'(सबसे ज्यादा|सबसे बड़ा|सबसे अधिक) (उधार|बकाया)|टॉप|top')){
+      const l=DB.accounts.filter(a=>!a.deleted&&a.bal>0).sort((a,b)=>b.bal-a.bal).slice(0,3);
+      if(!l.length)return 'किसी का उधार बाकी नहीं है।';
+      return 'सबसे ज़्यादा उधार: '+l.map(a=>a.name+' '+sp(a.bal)).join(', ')+'।';
+    }
+    if(has(t,'(बीत|ओवरड्यू|लेट|देर|तारीख निकल|तारीख गुजर)')&&has(t,'(खाते|खाता|ग्राहक|किसकी|कौन|किस)')){
+      const l=DB.accounts.filter(a=>!a.deleted&&isOverdue(a));
+      if(!l.length)return 'किसी की वापसी तारीख नहीं बीती।';
+      return l.length+' खातों की वापसी तारीख बीत चुकी है: '+l.map(a=>a.name+' '+sp(a.bal)).join(', ')+'।';
+    }
+    if(has(t,'(कुल|सबका|सब का|सारा|टोटल|सारांश|कितने खाते|कितने ग्राहक|कितना उधार बाहर|कितना बकाया बाहर)')&&has(t,'(उधार|बकाया|बाकी|एडवांस|हिसाब|खाते|ग्राहक|सारांश|टोटल)'))return totalsText();
+  }
+
+  /* नेविगेशन */
+  if(has(t,'(हटाए गए|हटाए हुए|डिलीट हुए|डिलीटेड)')&&has(t,'(खाते|खाता|अकाउंट)')){go('deleted');const n=DB.accounts.filter(a=>a.deleted).length;return 'हटाए गए खाते खुल गए। '+(n?n+' खाते हटे हुए हैं।':'कोई खाता हटा हुआ नहीं है।')}
+  if(has(t,'(सेटिंग)')&&!named){go('settings');return 'सेटिंग खुल गई।'}
+  const mon=parseMonth(t,tk);
+  const DELP='(हटा|डिलीट|मिटा|साफ|क्लियर|clear|delete)';
+  if(!named&&!has(t,DELP)&&(has(t,'(इतिहास|हिस्ट्री|हिसाब किताब|सारा हिसाब)')||mon)&&(!ctx||mon||has(t,'(टैब|सारा|सबका|सब का|पूरे)'))){
+    if(has(t,'(सिर्फ उधार|केवल उधार|उधार वाली)'))V.hf='add';
+    else if(has(t,'(सिर्फ जमा|केवल जमा)'))V.hf='sub';
+    else if(has(t,'(सब एंट्री|सब दिखाओ|फिल्टर हटाओ|सारी एंट्री)'))V.hf='all';
+    if(mon)V.hMonth=mon;
+    go('history');
+    return monthText(V.hMonth);
+  }
+  if(!named&&has(t,'^(खोजो|खोज|ढूंढो|ढूंढ|सर्च|search) ')){
+    V.q=raw.trim().replace(/^\S+\s+/,'');V.open=null;V.tab='home';render();
+    const n=DB.accounts.filter(a=>!a.deleted&&(a.name.toLowerCase().includes(V.q.toLowerCase())||a.mobile.includes(V.q))).length;
+    return V.q+' के लिए '+n+' खाते मिले।';
+  }
+  if(!named&&has(t,'(खोज साफ|सर्च साफ|खोज हटा)')){V.q='';render();return 'खोज साफ़ कर दी।'}
+  if(!named&&has(t,'^(होम|होम स्क्रीन|मुख्य|मेन|वापस|पीछे|खाते|सारे खाते|सब खाते|खाते खोलो|खातों की सूची|होम पर|मुख्य पेज)( |$)')){V.open=null;go('home');return 'होम पर आ गए।'}
+
+  /* यहाँ से आगे खाता चाहिए */
+  if(amb)return askPick(amb,raw);
+  const a=ctx;
+  const entryWord='(एंट्री|ट्रांजैक्शन|लेनदेन|लेन देन|एंट्रियां)';
+  if(!a){
+    if(has(t,DELP)||has(t,entryWord))return 'किस खाते की बात है? ग्राहक का नाम बोलिए।';
+    if(parseAmount(t))return 'किस खाते में जोड़ना या घटाना है? खाते का नाम बोलिए।';
+    return 'समझ नहीं आया। नाम के साथ बोलिए, जैसे "राहुल को 500 उधार", या "मदद" बोलिए।';
+  }
+  if(named&&V.open!==named.id){V.open=named.id;render()}
+
+  /* हिस्ट्री/एंट्री हटाना */
+  const histW='(हिस्ट्री|इतिहास)';
+  if((has(t,histW)&&has(t,DELP))||(has(t,entryWord)&&has(t,DELP)&&has(t,'(सारी|सारा|सब|पूरी|पूरा|सभी)'))){
+    const cnt=DB.log.filter(l=>l.acc===a.id&&!l.deleted).length;
+    if(!cnt)return a.name+' के खाते में कोई इतिहास नहीं है।';
+    return confirmAct(a.name+' की पूरी हिस्ट्री, '+cnt+' एंट्री, साफ़ करनी है? बैलेंस नहीं बदलेगा।',()=>delHistoryByVoice(a));
+  }
+  if(has(t,'(पिछली एंट्री|आखिरी एंट्री|आखरी एंट्री|पिछला ट्रांजैक्शन|आखिरी ट्रांजैक्शन|आखरी ट्रांजैक्शन|अंतिम एंट्री|अंतिम ट्रांजैक्शन|लास्ट एंट्री|last transaction|आखिरी लेनदेन|पिछला लेनदेन|undo|अनडू)')&&(has(t,DELP)||has(t,'(undo|अनडू)'))){
+    const hs=DB.log.filter(l=>l.acc===a.id&&!l.deleted&&(l.type==='add'||l.type==='sub')).sort((x,y)=>y.t-x.t);
+    if(!hs.length)return a.name+' के खाते में कोई लेन-देन नहीं है।';
+    return confirmAct(a.name+' की आखिरी एंट्री, '+LBL[hs[0].type]+' '+sp(hs[0].amt)+', हटाकर बैलेंस वापस करना है?',()=>delLastTxnByVoice(a));
+  }
+  if(has(t,entryWord)&&has(t,DELP)){
+    const hs=DB.log.filter(l=>l.acc===a.id&&!l.deleted).sort((x,y)=>y.t-x.t);
+    if(!hs.length)return a.name+' के खाते में कोई इतिहास नहीं है।';
+    let idx=null;
+    for(const w of tk){if(ORDM[w]!==undefined){idx=ORDM[w];break}}
+    const doIt=i=>{
+      const l=hs[i];if(!l)return 'इतनी एंट्री नहीं हैं। कुल '+hs.length+' हैं।';
+      return confirmAct((i+1)+' नंबर की एंट्री, '+LBL[l.type]+(l.amt?' '+sp(l.amt):'')+', इतिहास से हटानी है? बैलेंस नहीं बदलेगा।',()=>delEntryByVoice(a,l));
+    };
+    if(idx!==null)return doIt(idx);
+    return ask('कौन सी एंट्री हटानी है? सबसे नई एंट्री पहली है। पहली, दूसरी या तीसरी बोलिए।',(r2,t2)=>{
+      let j=null;for(const w of t2.split(' ')){if(ORDM[w]!==undefined){j=ORDM[w];break}}
+      if(j===null)return 'पहली, दूसरी, तीसरी जैसा बोलिए।';
+      P=null;return doIt(j);
+    });
+  }
+
+  /* खाता हटाना */
+  if(has(t,'(खाता|अकाउंट|खाते)')&&has(t,'(हटा|डिलीट|मिटा)'))
+    return confirmAct(a.name+' का खाता हटाना है? वह हटाए गए में चला जाएगा।',()=>{delAcc(a.id);return a.name+' का खाता हटा दिया। वापस लाने के लिए बोलिए: '+a.name+' का खाता वापस लाओ।'});
+
+  /* नाम / नंबर / लिमिट बदलना */
+  if(has(t,'नाम')&&has(t,'(बदल|सही|चेंज|रख|अपडेट|एडिट)')){
+    const nm=afterKey(raw,/नाम/);
+    if(nm)return renameAcc(a,nm);
+    return ask('नया नाम बोलिए।',(r2)=>{P=null;return renameAcc(a,r2)});
+  }
+  if(has(t,'(नंबर|मोबाइल)')&&has(t,'(बदल|सही|चेंज|अपडेट|नया)')){
+    const n=phoneOnly(t);
+    if(n)return changeMobile(a,n);
+    return ask('नया 10 अंकों का मोबाइल नंबर बोलिए।',(r2,t2)=>{const n2=phoneOnly(t2);if(!n2)return 'नंबर 10 अंक का होना चाहिए। फिर बोलिए।';P=null;return changeMobile(a,n2)});
+  }
+  if(has(t,'(लिमिट|सीमा)')){
+    if(has(t,'(हटा|बिना|खत्म|कोई लिमिट नहीं|कोई सीमा नहीं|शून्य|जीरो)'))return setAccLimit(a,0);
+    const v=parseAmount(t);
+    if(v>0)return setAccLimit(a,v);
+    return ask(a.name+' की उधार सीमा कितनी करनी है?',(r2,t2)=>{const z=parseAmount(t2);if(!(z>0))return 'रकम समझ नहीं आई, फिर बोलिए।';P=null;return setAccLimit(a,z)});
+  }
+
+  /* जानकारी पूछना */
+  if(has(t,'(क्या सामान|कौन सा सामान|सामान क्या|सामान बताओ|क्या क्या दिया)')){
+    const l=DB.log.filter(x=>x.acc===a.id&&!x.deleted&&x.type==='add'&&x.items).sort((x,y)=>y.t-x.t).slice(0,3);
+    if(!l.length)return a.name+' को दिए सामान की कोई जानकारी नहीं है।';
+    return a.name+' को दिया सामान: '+l.map(x=>x.items+' ('+dt(x.t).split(',')[0]+')').join('; ')+'।';
+  }
+  if(has(t,'(वापसी तारीख|कब देगा|कब देगी|कब तक देना|कब वापस)')&&!parseAmount(t)){
+    const d=nextDue(a);
+    if(!d||a.bal<=0)return a.name+' की कोई वापसी तारीख तय नहीं है।';
+    return a.name+' की वापसी तारीख '+dt(d).split(',')[0]+(d<Date.now()?', जो बीत चुकी है':'')+' है।';
+  }
+  if(has(t,'(कितने पैसे|पैसे कितने|बैलेंस|हिसाब कितना|रुपए कितने|रुपये कितने|कितना बकाया|कितना बाकी|बाकी कितना|कितना उधार|उधार कितना|कितना देना|कितना जमा|एडवांस कितना|कितना है)'))
+    return a.name+' के खाते में '+balText(a)+'।';
+  if(has(t,'(हिस्ट्री|इतिहास|एंट्री|ट्रांजैक्शन|लेनदेन|लेन देन)')){
+    let n=parseAmount(t);n=n&&n>0&&n<=10?Math.round(n):3;
+    const hs=DB.log.filter(l=>l.acc===a.id&&!l.deleted).sort((x,y)=>y.t-x.t);
+    if(!hs.length)return a.name+' के खाते में अभी कोई इतिहास नहीं है।';
+    return a.name+' की आखिरी '+Math.min(n,hs.length)+' एंट्री: '+hs.slice(0,n).map(l=>LBL[l.type]+(l.amt?' '+sp(l.amt):'')+(l.items?', सामान '+l.items:'')+(l.due&&l.type==='add'?', वापसी '+dt(l.due).split(',')[0]:'')).join('। ')+'।';
+  }
+
+  /* क्रियाएँ */
+  if(has(t,'(स्टेटमेंट|पीडीएफ|pdf|प्रिंट)')){printStatement(a.id);return a.name+' का स्टेटमेंट खोल रहा हूँ। पॉप-अप की अनुमति दें।'}
+  if(has(t,'(क्यूआर|qr|कोड स्कैन)')){
+    const up=has(t,'(यूपीआई|upi|पेमेंट)');
+    if(up&&!upiLink(a))return up&&!DB.settings.upi?'UPI QR के लिए पहले UPI ID सेट कीजिए।':'इस खाते में बकाया नहीं है, UPI QR नहीं बनेगा।';
+    showQR(a.id,up?'upi':'chk');return a.name+' का क्यूआर कोड खोल दिया।';
+  }
+  if(has(t,'(व्हाट्सएप|whatsapp|मैसेज भेज|मैसेज करो|रिमाइंडर|याद दिला|भेजो|भेज दो|संदेश)')){
+    shareWA(a.id);return a.name+' के व्हाट्सएप पर संदेश खोल दिया।';
+  }
+
+  /* पैसे जोड़ना/घटाना */
+  const amtCheck=extractTxn(t).amt;
+  if(amtCheck>0)return doTxnVoice(a,t);
+
+  return a.name+' का खाता खुल गया है। इस समय '+balText(a)+'।';
+}
+
+function newAccFlow(pre){
+  const d={name:pre.name||'',mobile:pre.mobile||'',limit:null,quick:!!(pre.name&&pre.mobile)};
+  const step=()=>{
+    if(!d.name)return ask('नया खाता बनाने के लिए ग्राहक का नाम बताइए।',(raw)=>{d.name=raw.trim();return step()});
+    if(!d.mobile)return ask(d.name+' का 10 अंकों का मोबाइल नंबर बोलिए।',(raw,t)=>{
+      const m=phoneOnly(t);
+      if(!m)return 'मोबाइल नंबर 10 अंक का होना चाहिए। कृपया सही नंबर बोलिए।';
+      if(DB.accounts.some(a=>!a.deleted&&h10(a.mobile)===m))return 'इस नंबर का खाता पहले से है। कोई दूसरा नंबर बोलिए।';
+      d.mobile=m;return step();
+    });
+    if(d.limit===null){
+      if(d.quick){d.limit=DB.settings.defaultCreditLimit||0}
+      else return ask('इस खाते की उधार सीमा कितनी रखनी है? रुपये बोलें, या शून्य बोलें।',(raw,t)=>{
+        if(has(t,'(डिफॉल्ट|सामान्य|वही)'))d.limit=DB.settings.defaultCreditLimit||0;
+        else{const v=parseAmount(t);d.limit=v>0?v:0}
+        return step();
+      });
+    }
+    P=null;
+    const res=createAccount(d.name,d.mobile,'आवाज़',d.limit);
+    if(typeof res==='string'){d.mobile='';return res+' '+step()}
+    V.open=res.id;render();
+    return d.name+' का नया खाता बन गया और खुल गया।'+(d.limit>0?' उधार सीमा '+sp(d.limit)+'।':'');
+  };
+  return step();
+}
+
+/* ================== आवाज़ पैनल और माइक ================== */
+let rec=null,voiceActive=false,voiceOpen=false,micDenied=false;
+function getHindiVoice(){
+  try{const vs=speechSynthesis.getVoices();return vs.find(v=>v.lang==='hi-IN')||vs.find(v=>v.lang&&v.lang.startsWith('hi'))||null}catch(e){return null}
+}
+function speak(m,onend){
+  let fired=false,tm=0;
+  const fin=()=>{if(fired)return;fired=true;clearTimeout(tm);if(onend)onend()};
+  tm=setTimeout(fin,Math.min(20000,3000+String(m).length*130)); // कुछ फ़ोन में बोलना खत्म होने का संकेत नहीं आता, तब भी सुनना दोबारा शुरू हो
+  try{
+    speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(String(m).replace(/₹/g,' रुपये '));
+    u.lang='hi-IN';
+    const v=getHindiVoice();if(v)u.voice=v;
+    u.rate=1;u.pitch=1;
+    u.onend=fin;u.onerror=fin;
+    speechSynthesis.speak(u);
+  }catch(e){fin()}
+}
+const HELP_HTML='<div class="hint" style="line-height:1.8">'
++'<b>खाते</b><br>• नया खाता / नया खाता राहुल 9876543210<br>• राहुल का खाता खोलो · राहुल का बैलेंस बताओ<br>• राहुल का नाम बदलकर रवि करो · राहुल का नंबर बदलो<br>• राहुल की लिमिट 5000 करो · राहुल की लिमिट हटाओ<br>• राहुल का खाता हटाओ · राहुल का खाता वापस लाओ · राहुल का खाता हमेशा के लिए हटाओ<br>'
++'<b>उधार / जमा</b><br>• राहुल को 500 उधार<br>• राहुल को 2 किलो चीनी 1 लीटर तेल 400 रुपये उधार वापसी 5 दिन में<br>• राहुल के 200 जमा / राहुल को माइनस 200<br>• (खाता खुला हो तो) प्लस 500 / माइनस 200<br>'
++'<b>इतिहास</b><br>• राहुल की हिस्ट्री दिखाओ / आखिरी 5 एंट्री बताओ<br>• राहुल की हिस्ट्री डिलीट करो (बैलेंस नहीं बदलता)<br>• राहुल की आखिरी एंट्री हटाओ (बैलेंस वापस होता है)<br>• राहुल की दूसरी एंट्री हटाओ · राहुल को क्या सामान दिया · राहुल की वापसी तारीख<br>'
++'<b>स्टॉक</b><br>• चीनी और तेल खत्म · स्टॉक में आटा जोड़ो<br>• चीनी आ गया · स्टॉक बताओ · स्टॉक व्हाट्सएप पर भेजो · सारा स्टॉक हटाओ<br>'
++'<b>रिपोर्ट / टैब</b><br>• कुल उधार कितना है · सबसे ज़्यादा उधार किसका · किसकी तारीख बीत गई<br>• इतिहास खोलो · पिछले महीने का इतिहास · अक्टूबर का इतिहास · सिर्फ उधार दिखाओ<br>• स्टॉक खोलो · हटाए गए खाते · सेटिंग खोलो · होम / वापस · खोजो राहुल<br>'
++'<b>सेटिंग</b><br>• दुकान का नाम गुप्ता स्टोर रखो · जमा लिमिट 2000 करो · डिफ़ॉल्ट उधार सीमा 5000 करो<br>• पिन सेट करो 1234 · पिन हटाओ · UPI ID और ऐप लिंक नीचे टाइप करके दें<br>'
++'<b>और काम</b><br>• राहुल को व्हाट्सएप भेजो · राहुल का क्यूआर · राहुल का यूपीआई क्यूआर · राहुल का स्टेटमेंट<br>• सबको याद दिलाओ → शुरू करो → अगला · बैकअप डाउनलोड करो<br>• हटाने जैसे काम से पहले मैं पूछूँगा — "हाँ" या "नहीं" बोलिए · रद्द करो · बंद करो</div>';
+function openVoice(){
+  if(!voiceOpen){
+    voiceOpen=true;micDenied=false;
+    const p=$('#vpanel');
+    p.innerHTML='<div class="vh"><b>🎤 आवाज़ सहायक</b><span id="vstat" class="mut" style="font-size:13px;flex:1;text-align:right">तैयार</span><button class="btn2 d" onclick="closeVoice()">✕</button></div>'
+     +'<div id="vtr" class="tr"></div><div id="vres" class="res"></div>'
+     +'<div class="row"><input id="vtxt" placeholder="यहाँ टाइप करके भी कमांड दें" onkeydown="if(event.key===\'Enter\')vText()"><button class="btn" onclick="vText()">भेजें</button></div>'
+     +'<div class="row"><button class="btn2" onclick="listen()">🎤 सुनो</button><button class="btn2" onclick="pauseVoice()">⏸ रोको</button></div>'
+     +'<details style="margin-top:8px"><summary class="hint" style="cursor:pointer">💡 क्या-क्या बोल सकते हैं?</summary>'+HELP_HTML+'</details>';
+    p.classList.add('on');document.body.classList.add('vp');
+  }
+  voiceActive=true;P=null;micDenied=false;
+  startRec(); // सीधे बटन दबाने के साथ ही माइक शुरू (कई फ़ोन में यही ज़रूरी है)
+}
+function closeVoice(){
+  voiceActive=false;voiceOpen=false;P=null;closeLater=false;
+  try{rec&&rec.abort()}catch(e){}rec=null;
+  try{speechSynthesis.cancel()}catch(e){}
+  const p=$('#vpanel');p.classList.remove('on');p.innerHTML='';document.body.classList.remove('vp');
+  const mb=$('#micBtn');if(mb)mb.classList.remove('rec');
+}
+function pauseVoice(){voiceActive=false;try{rec&&rec.abort()}catch(e){}try{speechSynthesis.cancel()}catch(e){}const s=$('#vstat');if(s)s.textContent='रुका हुआ — 🎤 दबाइए'}
+function listen(){voiceActive=true;micDenied=false;startRec()}
+function vShow(t,r){const a=$('#vtr'),b=$('#vres');if(a&&t!=null)a.textContent='आपने कहा: "'+t+'"';if(b&&r!=null)b.textContent=r}
+function vRun(text){
+  let r;
+  try{r=runCommand(text)}catch(e){console.error(e);P=null;r='कुछ गड़बड़ हो गई, फिर से बोलिए।'}
+  vShow(text,r);
+  const s=$('#vstat');if(s)s.textContent='काम हो गया। आगे बोलिए...';
+  const done=()=>{
+    if(closeLater){closeLater=false;closeVoice();return}
+    if(voiceActive)setTimeout(()=>{if(voiceActive)startRec()},500);
+  };
+  if(r)speak(r,done);else done();
+}
+function vText(){const i=$('#vtxt');if(!i||!i.value.trim())return;const t=i.value;i.value='';try{rec&&rec.abort()}catch(e){}vRun(t)}
+function startRec(){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  const st=$('#vstat');
+  if(!SR){if(st)st.textContent='❌ इस ब्राउज़र/ऐप में माइक की सुविधा नहीं है। Chrome में खोलिए, या नीचे टाइप कीजिए';return}
+  if(!window.isSecureContext&&location.protocol!=='file:'){if(st)st.textContent='❌ माइक के लिए https:// वाला लिंक चाहिए';return}
+  try{rec&&rec.abort()}catch(e){}
+  try{speechSynthesis.cancel()}catch(e){}
+  rec=new SR();rec.lang='hi-IN';rec.interimResults=true;rec.continuous=false;
+  let last='';
+  rec.onstart=()=>{const s=$('#vstat');if(s&&voiceActive)s.textContent='🔴 सुन रहा हूँ... बोलिए';const mb=$('#micBtn');if(mb)mb.classList.add('rec')};
+  rec.onresult=e=>{let s='';for(const r of e.results)s+=r[0].transcript;last=s;vShow(s,null)};
+  rec.onerror=e=>{
+    const mb=$('#micBtn');if(mb)mb.classList.remove('rec');
+    const s=$('#vstat');
+    if(e.error==='not-allowed'||e.error==='service-not-allowed'){micDenied=true;voiceActive=false;if(s)s.textContent='❌ माइक की अनुमति बंद है — ब्राउज़र की साइट सेटिंग में माइक "अनुमति दें" कीजिए (या https:// लिंक से खोलिए)'}
+    else if(e.error==='audio-capture'){micDenied=true;voiceActive=false;if(s)s.textContent='❌ माइक नहीं मिला / कोई दूसरा ऐप माइक इस्तेमाल कर रहा है'}
+    else if(e.error==='network'){micDenied=true;voiceActive=false;if(s)s.textContent='❌ आवाज़ पहचान के लिए इंटरनेट चाहिए'}
+    else if(e.error==='language-not-supported'){micDenied=true;voiceActive=false;if(s)s.textContent='❌ इस फ़ोन में हिंदी आवाज़ पहचान चालू नहीं'}
+  };
+  rec.onend=()=>{
+    const mb=$('#micBtn');if(mb)mb.classList.remove('rec');
+    if(micDenied)return;
+    if(last&&voiceActive){vRun(last)}
+    else if(voiceActive){setTimeout(()=>{if(voiceActive)startRec()},800)}
+  };
+  try{rec.start()}catch(e){}
+}
+
+if(!(location.hash.startsWith('#c=')&&customerView()))render();
+</script>
+</body>
+</html>

@@ -1,0 +1,39 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <group
+        android:scaleX="0.65"
+        android:scaleY="0.65"
+        android:translateX="18.9"
+        android:translateY="18.9">
+        <!-- Ledger Book Base -->
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M24,14h60c4.4,0 8,3.6 8,8v64c0,4.4 -3.6,8 -8,8H24c-4.4,0 -8,-3.6 -8,-8V22c0,-4.4 3.6,-8 8,-8z"/>
+        <!-- Spine accent -->
+        <path
+            android:fillColor="#075C45"
+            android:pathData="M16,22c0,-4.4 3.6,-8 8,-8h8v80h-8c-4.4,0 -8,-3.6 -8,-8V22z"/>
+        <!-- Spine stitches / rings -->
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M28,26h4v4h-4z M28,40h4v4h-4z M28,54h4v4h-4z M28,68h4v4h-4z M28,82h4v4h-4z"/>
+        <!-- Rupee Symbol on Ledger Cover -->
+        <path
+            android:fillColor="#0B7A5C"
+            android:pathData="M48,32h24v5H58.5c2.8,1.4 4.8,3.8 5.3,7H72v5h-8c-0.6,6.2 -5.2,10.6 -12,11.2l14.2,18.8h-7.8L47,59.5v-4.5h4.6c4.6,0 7.8,-2.8 8.2,-6H48v-5h12.5c-0.5,-2.2 -2.2,-4 -5.5,-4H48V32z"/>
+        <!-- Gold Voice / Mic Badge -->
+        <path
+            android:fillColor="#FFB300"
+            android:pathData="M76,64c6.6,0 12,5.4 12,12s-5.4,12 -12,12s-12,-5.4 -12,-12s5.4,-12 12,-12z"/>
+        <!-- Mic silhouette inside badge -->
+        <path
+            android:fillColor="#1B2420"
+            android:pathData="M76,69c1.7,0 3,1.3 3,3v4c0,1.7 -1.3,3 -3,3s-3,-1.3 -3,-3v-4c0,-1.7 1.3,-3 3,-3z"/>
+        <path
+            android:fillColor="#1B2420"
+            android:pathData="M71,75h1.5c0,1.9 1.6,3.5 3.5,3.5s3.5,-1.6 3.5,-3.5H81c0,2.5 -1.9,4.5 -4.25,4.9V82h-1.5v-2.1C72.9,79.5 71,77.5 71,75z"/>
+    </group>
+</vector>
